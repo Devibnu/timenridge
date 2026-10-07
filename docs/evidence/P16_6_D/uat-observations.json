@@ -1,0 +1,390 @@
+{
+  "environment": "local development runtime",
+  "frontendUrl": "http://localhost:5173",
+  "apiUrl": "http://localhost:3000",
+  "endpoints": [
+    {
+      "endpoint": "GET /api/attendance/raw",
+      "status": 200,
+      "success": true,
+      "dataLength": 1,
+      "meta": {
+        "page": 1,
+        "pageSize": 20,
+        "total": 1,
+        "totalPages": 1
+      },
+      "bearer": true
+    },
+    {
+      "endpoint": "GET /api/attendance/events",
+      "status": 200,
+      "success": true,
+      "dataLength": 1,
+      "meta": {
+        "page": 1,
+        "pageSize": 20,
+        "total": 1,
+        "totalPages": 1
+      },
+      "bearer": true
+    },
+    {
+      "endpoint": "GET /api/attendance/rule-results",
+      "status": 200,
+      "success": true,
+      "dataLength": 1,
+      "meta": {
+        "page": 1,
+        "pageSize": 20,
+        "total": 1,
+        "totalPages": 1
+      },
+      "bearer": true
+    },
+    {
+      "endpoint": "GET /api/attendance/cycles",
+      "status": 200,
+      "success": true,
+      "dataLength": 1,
+      "meta": {
+        "page": 1,
+        "pageSize": 20,
+        "total": 1,
+        "totalPages": 1
+      },
+      "bearer": true
+    }
+  ],
+  "filters": [
+    {
+      "endpoint": "raw",
+      "parameter": "deviceId",
+      "sent": true,
+      "resultRows": 1
+    },
+    {
+      "endpoint": "raw",
+      "parameter": "deviceEmployeeId",
+      "sent": true,
+      "resultRows": 1
+    },
+    {
+      "endpoint": "raw",
+      "parameter": "dateFrom",
+      "sent": true,
+      "resultRows": 1
+    },
+    {
+      "endpoint": "raw",
+      "parameter": "dateTo",
+      "sent": true,
+      "resultRows": 0
+    },
+    {
+      "endpoint": "events",
+      "parameter": "deviceId",
+      "sent": true,
+      "resultRows": 1
+    },
+    {
+      "endpoint": "events",
+      "parameter": "deviceEmployeeId",
+      "sent": true,
+      "resultRows": 1
+    },
+    {
+      "endpoint": "events",
+      "parameter": "employeeId",
+      "sent": true,
+      "resultRows": 1
+    },
+    {
+      "endpoint": "events",
+      "parameter": "status",
+      "sent": true,
+      "resultRows": 1
+    },
+    {
+      "endpoint": "events",
+      "parameter": "eventType",
+      "sent": true,
+      "resultRows": 1
+    },
+    {
+      "endpoint": "events",
+      "parameter": "dateFrom",
+      "sent": true,
+      "resultRows": 1
+    },
+    {
+      "endpoint": "events",
+      "parameter": "dateTo",
+      "sent": true,
+      "resultRows": 0
+    },
+    {
+      "endpoint": "rule-results",
+      "parameter": "attendanceEventId",
+      "sent": true,
+      "resultRows": 1
+    },
+    {
+      "endpoint": "rule-results",
+      "parameter": "ruleCode",
+      "sent": true,
+      "resultRows": 1
+    },
+    {
+      "endpoint": "rule-results",
+      "parameter": "decision",
+      "sent": true,
+      "resultRows": 1
+    },
+    {
+      "endpoint": "rule-results",
+      "parameter": "dateFrom",
+      "sent": true,
+      "resultRows": 1
+    },
+    {
+      "endpoint": "rule-results",
+      "parameter": "dateTo",
+      "sent": true,
+      "resultRows": 0
+    },
+    {
+      "endpoint": "cycles",
+      "parameter": "employeeId",
+      "sent": true,
+      "resultRows": 1
+    },
+    {
+      "endpoint": "cycles",
+      "parameter": "status",
+      "sent": true,
+      "resultRows": 1
+    },
+    {
+      "endpoint": "cycles",
+      "parameter": "dateFrom",
+      "sent": true,
+      "resultRows": 1
+    },
+    {
+      "endpoint": "cycles",
+      "parameter": "dateTo",
+      "sent": true,
+      "resultRows": 1
+    }
+  ],
+  "screenshots": [
+    "unauthenticated-login.png",
+    "raw.png",
+    "pagination-page-size.png",
+    "filter-applied.png",
+    "responsive-1440.png",
+    "responsive-768.png",
+    "responsive-375.png",
+    "events.png",
+    "rule-results.png",
+    "cycles.png"
+  ],
+  "console": {
+    "errors": [
+      "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+      "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+      "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+      "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+      "Failed to load resource: the server responded with a status of 401 (Unauthorized)",
+      "Failed to load resource: the server responded with a status of 401 (Unauthorized)"
+    ],
+    "warnings": [
+      "[VUE_ROUTER_R0025] The `next()` callback in navigation guards is deprecated.\n├▶ fix: Return the value instead: `next()` becomes `return`, `next(false)` becomes `return false`, `next(\"/path\")` becomes `return \"/path\"`.\n╰▶ see: https://router.vuejs.org/guide/advanced/navigation-guards.html#Optional-th",
+      "[VUE_ROUTER_R0025] The `next()` callback in navigation guards is deprecated.\n├▶ fix: Return the value instead: `next()` becomes `return`, `next(false)` becomes `return false`, `next(\"/path\")` becomes `return \"/path\"`.\n╰▶ see: https://router.vuejs.org/guide/advanced/navigation-guards.html#Optional-th",
+      "[VUE_ROUTER_R0025] The `next()` callback in navigation guards is deprecated.\n├▶ fix: Return the value instead: `next()` becomes `return`, `next(false)` becomes `return false`, `next(\"/path\")` becomes `return \"/path\"`.\n╰▶ see: https://router.vuejs.org/guide/advanced/navigation-guards.html#Optional-th",
+      "[VUE_ROUTER_R0025] The `next()` callback in navigation guards is deprecated.\n├▶ fix: Return the value instead: `next()` becomes `return`, `next(false)` becomes `return false`, `next(\"/path\")` becomes `return \"/path\"`.\n╰▶ see: https://router.vuejs.org/guide/advanced/navigation-guards.html#Optional-th",
+      "[VUE_ROUTER_R0025] The `next()` callback in navigation guards is deprecated.\n├▶ fix: Return the value instead: `next()` becomes `return`, `next(false)` becomes `return false`, `next(\"/path\")` becomes `return \"/path\"`.\n╰▶ see: https://router.vuejs.org/guide/advanced/navigation-guards.html#Optional-th",
+      "[VUE_ROUTER_R0025] The `next()` callback in navigation guards is deprecated.\n├▶ fix: Return the value instead: `next()` becomes `return`, `next(false)` becomes `return false`, `next(\"/path\")` becomes `return \"/path\"`.\n╰▶ see: https://router.vuejs.org/guide/advanced/navigation-guards.html#Optional-th",
+      "[VUE_ROUTER_R0025] The `next()` callback in navigation guards is deprecated.\n├▶ fix: Return the value instead: `next()` becomes `return`, `next(false)` becomes `return false`, `next(\"/path\")` becomes `return \"/path\"`.\n╰▶ see: https://router.vuejs.org/guide/advanced/navigation-guards.html#Optional-th",
+      "[VUE_ROUTER_R0025] The `next()` callback in navigation guards is deprecated.\n├▶ fix: Return the value instead: `next()` becomes `return`, `next(false)` becomes `return false`, `next(\"/path\")` becomes `return \"/path\"`.\n╰▶ see: https://router.vuejs.org/guide/advanced/navigation-guards.html#Optional-th",
+      "[VUE_ROUTER_R0025] The `next()` callback in navigation guards is deprecated.\n├▶ fix: Return the value instead: `next()` becomes `return`, `next(false)` becomes `return false`, `next(\"/path\")` becomes `return \"/path\"`.\n╰▶ see: https://router.vuejs.org/guide/advanced/navigation-guards.html#Optional-th",
+      "[VUE_ROUTER_R0025] The `next()` callback in navigation guards is deprecated.\n├▶ fix: Return the value instead: `next()` becomes `return`, `next(false)` becomes `return false`, `next(\"/path\")` becomes `return \"/path\"`.\n╰▶ see: https://router.vuejs.org/guide/advanced/navigation-guards.html#Optional-th",
+      "[VUE_ROUTER_R0025] The `next()` callback in navigation guards is deprecated.\n├▶ fix: Return the value instead: `next()` becomes `return`, `next(false)` becomes `return false`, `next(\"/path\")` becomes `return \"/path\"`.\n╰▶ see: https://router.vuejs.org/guide/advanced/navigation-guards.html#Optional-th"
+    ]
+  },
+  "accountRole": "SUPER_ADMIN",
+  "authMethod": "Short-lived JWT signed locally for existing account; password login not exercised",
+  "unauthenticatedRedirect": "/login",
+  "authentication401": {
+    "missingToken": 401,
+    "invalidToken": 401
+  },
+  "invalidQueryResponses": [
+    {
+      "endpoint": "/api/attendance/raw",
+      "status": 400
+    },
+    {
+      "endpoint": "/api/attendance/events",
+      "status": 400
+    },
+    {
+      "endpoint": "/api/attendance/rule-results",
+      "status": 400
+    },
+    {
+      "endpoint": "/api/attendance/cycles",
+      "status": 400
+    }
+  ],
+  "dashboardVisible": true,
+  "rawPayloadExcluded": true,
+  "rawPageRows": 1,
+  "rawMutationControls": 0,
+  "rawPageIndicator": "Page 1 of 1",
+  "rawNextDisabled": true,
+  "rawPreviousDisabled": true,
+  "rawPageSize50Request": true,
+  "rawPageSize50Meta": 50,
+  "rawPageSize100Meta": 100,
+  "rawResponsive": [
+    {
+      "width": 1440,
+      "bodyOverflow": false,
+      "tableScrollRegion": true,
+      "tableOverflowContained": false,
+      "paginationVisible": true,
+      "filtersVisible": true
+    },
+    {
+      "width": 768,
+      "bodyOverflow": false,
+      "tableScrollRegion": true,
+      "tableOverflowContained": false,
+      "paginationVisible": true,
+      "filtersVisible": true
+    },
+    {
+      "width": 375,
+      "bodyOverflow": false,
+      "tableScrollRegion": true,
+      "tableOverflowContained": true,
+      "paginationVisible": true,
+      "filtersVisible": true
+    }
+  ],
+  "eventsPageRows": 1,
+  "eventsMutationControls": 0,
+  "eventsPageIndicator": "Page 1 of 1",
+  "eventsNextDisabled": true,
+  "eventsPreviousDisabled": true,
+  "eventsPageSize50Request": true,
+  "eventsPageSize50Meta": 50,
+  "eventsPageSize100Meta": 100,
+  "eventsResponsive": [
+    {
+      "width": 1440,
+      "bodyOverflow": false,
+      "tableScrollRegion": true,
+      "tableOverflowContained": false,
+      "paginationVisible": true,
+      "filtersVisible": true
+    },
+    {
+      "width": 768,
+      "bodyOverflow": false,
+      "tableScrollRegion": true,
+      "tableOverflowContained": true,
+      "paginationVisible": true,
+      "filtersVisible": true
+    },
+    {
+      "width": 375,
+      "bodyOverflow": false,
+      "tableScrollRegion": true,
+      "tableOverflowContained": true,
+      "paginationVisible": true,
+      "filtersVisible": true
+    }
+  ],
+  "ruleInputExcluded": true,
+  "rule-resultsPageRows": 1,
+  "rule-resultsMutationControls": 0,
+  "rule-resultsPageIndicator": "Page 1 of 1",
+  "rule-resultsNextDisabled": true,
+  "rule-resultsPreviousDisabled": true,
+  "rule-resultsPageSize50Request": true,
+  "rule-resultsPageSize50Meta": 50,
+  "rule-resultsPageSize100Meta": 100,
+  "rule-resultsResponsive": [
+    {
+      "width": 1440,
+      "bodyOverflow": false,
+      "tableScrollRegion": true,
+      "tableOverflowContained": false,
+      "paginationVisible": true,
+      "filtersVisible": true
+    },
+    {
+      "width": 768,
+      "bodyOverflow": false,
+      "tableScrollRegion": true,
+      "tableOverflowContained": false,
+      "paginationVisible": true,
+      "filtersVisible": true
+    },
+    {
+      "width": 375,
+      "bodyOverflow": false,
+      "tableScrollRegion": true,
+      "tableOverflowContained": true,
+      "paginationVisible": true,
+      "filtersVisible": true
+    }
+  ],
+  "cyclesPageRows": 1,
+  "cyclesMutationControls": 0,
+  "cyclesPageIndicator": "Page 1 of 1",
+  "cyclesNextDisabled": true,
+  "cyclesPreviousDisabled": true,
+  "cyclesPageSize50Request": true,
+  "cyclesPageSize50Meta": 50,
+  "cyclesPageSize100Meta": 100,
+  "cyclesResponsive": [
+    {
+      "width": 1440,
+      "bodyOverflow": false,
+      "tableScrollRegion": true,
+      "tableOverflowContained": false,
+      "paginationVisible": true,
+      "filtersVisible": true
+    },
+    {
+      "width": 768,
+      "bodyOverflow": false,
+      "tableScrollRegion": true,
+      "tableOverflowContained": true,
+      "paginationVisible": true,
+      "filtersVisible": true
+    },
+    {
+      "width": 375,
+      "bodyOverflow": false,
+      "tableScrollRegion": true,
+      "tableOverflowContained": true,
+      "paginationVisible": true,
+      "filtersVisible": true
+    }
+  ],
+  "traceability": {
+    "rawToEvent": true,
+    "eventToRuleResult": true,
+    "eventToCycle": true
+  },
+  "devicesVisible": true,
+  "devicesApiStatus": 401,
+  "logout": "NOT EXECUTED — logout writes an authentication audit row, and this UAT phase prohibits database changes; prior P16.6-C.1 evidence verified logout.",
+  "errorUi": "NOT EXECUTED — safe live error reproduction unavailable without interrupting the API or modifying requests.",
+  "databaseEmpty": false
+}

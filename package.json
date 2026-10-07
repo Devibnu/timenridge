@@ -1,0 +1,46 @@
+{
+  "name": "timebridge-monorepo",
+  "version": "0.1.0",
+  "private": true,
+  "description": "TimeBridge — Enterprise Attendance Integration Middleware for SAP",
+  "workspaces": [
+    "apps/*",
+    "packages/*",
+    "frontend"
+  ],
+  "scripts": {
+    "build": "tsc -b",
+    "build:all": "npm run build && npm run --workspace=frontend build",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "lint": "eslint . --ext .ts,.vue",
+    "format:check": "prettier --check .",
+    "clean": "rm -rf dist packages/*/dist apps/*/dist frontend/dist",
+    "dev:api": "npm run --workspace=@timebridge/api dev",
+    "dev:worker": "npm run --workspace=@timebridge/worker dev",
+    "dev:scheduler": "npm run --workspace=@timebridge/scheduler dev",
+    "dev:frontend": "npm run --workspace=frontend dev"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/express": "^5.0.6",
+    "@types/ioredis": "^4.28.10",
+    "@types/node": "^20.17.0",
+    "@typescript-eslint/eslint-plugin": "^8.70.1",
+    "@typescript-eslint/parser": "^8.70.1",
+    "eslint": "^8.57.1",
+    "prettier": "^3.9.8",
+    "prisma": "^5.22.0",
+    "tsx": "^4.23.15",
+    "typescript": "^5.6.2",
+    "vitest": "^2.1.1",
+    "vitest-mock-extended": "^3.1.1"
+  },
+  "dependencies": {
+    "axios": "^1.20.0",
+    "bullmq": "^6.3.8",
+    "express": "^5.2.1",
+    "ioredis": "^6.0.0",
+    "node-cron": "^4.6.0"
+  }
+}

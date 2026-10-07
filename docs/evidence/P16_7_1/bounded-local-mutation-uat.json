@@ -1,0 +1,155 @@
+{
+  "fixture": {
+    "mappingId": "2ed4ca94-9ff3-4634-9338-a638dbefd91b",
+    "deviceId": "614d1a40-d348-4f4b-a813-20d99055ff6e",
+    "employeeId": "7d4ed1ca-3d0f-428b-a0f7-bc33024d677e",
+    "deviceEmployeeId": "P1671-UAT-b56ae48b-6ead-4e41-b4e3-ad35919f4699"
+  },
+  "responses": {
+    "create": 201,
+    "readFromBrowser": 200,
+    "updateBrowser": 200,
+    "updateApi": 200,
+    "updateResponse": "mapping id matched",
+    "deactivate": 200,
+    "deactivateIsInactive": true,
+    "auditorMutation": 403,
+    "overlap": 400,
+    "overlapError": "Overlapping mapping found for this device validity period",
+    "listAfter": 200,
+    "listedInactive": true
+  },
+  "updatedPeriod": {
+    "from": "2010-01-04T00:00:00.000Z",
+    "to": "2010-02-04T00:00:00.000Z",
+    "sapId": "P1671-SAP-UAT-UPDATED-FINAL"
+  },
+  "audit": {
+    "retained": true,
+    "entries": [
+      {
+        "id": "2341acbb-3286-4c2a-a07d-ccaf19a3e93f",
+        "action": "EMPLOYEE_MAPPING_CREATED",
+        "timestamp": "2026-09-29T12:20:01.719Z"
+      },
+      {
+        "id": "e8b6cfc5-0aab-439a-ba45-82135a438894",
+        "action": "EMPLOYEE_MAPPING_UPDATED",
+        "timestamp": "2026-09-29T12:20:01.967Z"
+      },
+      {
+        "id": "3646a853-ea41-4738-b12b-6eb7c11a0896",
+        "action": "EMPLOYEE_MAPPING_UPDATED",
+        "timestamp": "2026-09-29T12:25:24.789Z"
+      },
+      {
+        "id": "cac72f26-67f3-4036-b2c8-3fe8be53aab3",
+        "action": "EMPLOYEE_MAPPING_UPDATED",
+        "timestamp": "2026-09-29T12:25:24.818Z"
+      },
+      {
+        "id": "77788f72-44dc-4aee-aac3-08a3b31ad1cf",
+        "action": "EMPLOYEE_MAPPING_DEACTIVATED",
+        "timestamp": "2026-09-29T12:25:24.831Z"
+      }
+    ]
+  },
+  "protectedTables": {
+    "unchanged": true,
+    "before": {
+      "attendanceRawEvent": {
+        "count": 1,
+        "sha256": "8c5d0c439e374e2154b9cb9088b5d9eb91b1d698d6a49bd63b5d210e21ce30eb"
+      },
+      "attendanceEvent": {
+        "count": 1,
+        "sha256": "52a4ae4ac90e3034a3e46f36a911737ed2e4a2e4cae1cdd84f2dafdbfd5a25bb"
+      },
+      "attendanceRuleResult": {
+        "count": 1,
+        "sha256": "a5cbe9ccb94f066c09e256c8440bcaeb969bf61db61090a6fa43a6efaaeb319c"
+      },
+      "attendanceCycle": {
+        "count": 1,
+        "sha256": "817001d95131de33e6fd5a58828a31b06529f109312b95794cd6ab6f6802773d"
+      },
+      "integrationBatch": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "integrationFile": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "sapResponse": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "attendanceBatch": {
+        "count": 1,
+        "sha256": "6083119191f5321c69e4d3996125951f85f0621856c88d973fcb224b5fadb981"
+      },
+      "attendanceBatchRecord": {
+        "count": 1,
+        "sha256": "c63031bc8be95c2a9e1bb2e2f6847a88c2f6c875a5c85a21e0f218ea3f8c116a"
+      },
+      "attendanceBatchAcknowledgement": {
+        "count": 1,
+        "sha256": "89e0ce383f09278b6e7d4b04c7d954eb6840d81eba673b441f5adaceee343125"
+      }
+    },
+    "after": {
+      "attendanceRawEvent": {
+        "count": 1,
+        "sha256": "8c5d0c439e374e2154b9cb9088b5d9eb91b1d698d6a49bd63b5d210e21ce30eb"
+      },
+      "attendanceEvent": {
+        "count": 1,
+        "sha256": "52a4ae4ac90e3034a3e46f36a911737ed2e4a2e4cae1cdd84f2dafdbfd5a25bb"
+      },
+      "attendanceRuleResult": {
+        "count": 1,
+        "sha256": "a5cbe9ccb94f066c09e256c8440bcaeb969bf61db61090a6fa43a6efaaeb319c"
+      },
+      "attendanceCycle": {
+        "count": 1,
+        "sha256": "817001d95131de33e6fd5a58828a31b06529f109312b95794cd6ab6f6802773d"
+      },
+      "integrationBatch": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "integrationFile": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "sapResponse": {
+        "count": 0,
+        "sha256": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945"
+      },
+      "attendanceBatch": {
+        "count": 1,
+        "sha256": "6083119191f5321c69e4d3996125951f85f0621856c88d973fcb224b5fadb981"
+      },
+      "attendanceBatchRecord": {
+        "count": 1,
+        "sha256": "c63031bc8be95c2a9e1bb2e2f6847a88c2f6c875a5c85a21e0f218ea3f8c116a"
+      },
+      "attendanceBatchAcknowledgement": {
+        "count": 1,
+        "sha256": "89e0ce383f09278b6e7d4b04c7d954eb6840d81eba673b441f5adaceee343125"
+      }
+    }
+  },
+  "resolve": {
+    "status": "NOT RUN",
+    "reason": "Resolver writes AttendanceEvent; explicitly forbidden by SA scope. No resolve request was sent."
+  },
+  "frontend": {
+    "url": "http://localhost:5173/employee-mappings",
+    "browserPatchHttp": 200,
+    "desktopWidth": 1440,
+    "mobileWidth": 390,
+    "priorLiveResponsiveEvidence": "1440/1440 desktop and 390/390 mobile; no overflow"
+  }
+}

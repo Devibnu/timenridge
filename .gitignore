@@ -1,0 +1,65 @@
+# Dependencies
+node_modules/
+.pnp
+.pnp.js
+
+# Production / Build Output
+dist/
+build/
+*.tsbuildinfo
+
+# Environment & Secrets (CRITICAL: NEVER COMMIT SECRETS)
+.env
+.env.local
+.env.*.local
+*.pem
+*.key
+*.cert
+*.id_rsa
+*.id_ed25519
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Testing & Coverage
+coverage/
+.nyc_output/
+
+# OS / Editor Files
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# Temporary / Scratch files
+tmp/
+temp/
+scratch/
+.env.example.backup
+
+# Local development / debugging artifacts
+build_errors.txt
+tsc_output.txt
+fix-*.js
+fix_lint.js
+fix_lint.py
+generate-operations.js
+generate-tests.js
+test-error.js
+test-login.js
+test-manager.js
+test-multi-emp.js
+test-overlap.js
+test-workflow.js
+test-zero-duration.js
+test_api.js

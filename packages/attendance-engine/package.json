@@ -1,0 +1,22 @@
+{
+  "name": "@timebridge/attendance-engine",
+  "version": "0.1.0",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "@timebridge/database": "^0.1.0",
+    "@timebridge/device-adapters": "^0.1.0",
+    "@timebridge/security": "^0.1.0",
+    "date-fns": "^4.4.0",
+    "date-fns-tz": "^3.2.0",
+    "ssh2-sftp-client": "^12.1.1"
+  },
+  "devDependencies": {
+    "@types/ssh2-sftp-client": "^9.0.6"
+  }
+}

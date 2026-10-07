@@ -1,0 +1,29 @@
+{
+  "name": "@timebridge/api",
+  "version": "0.1.0",
+  "private": true,
+  "main": "dist/index.js",
+  "scripts": {
+    "build": "tsc",
+    "clean": "rm -rf dist",
+    "dev": "tsx src/index.ts",
+    "start": "node dist/index.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "@timebridge/attendance-engine": "^0.1.0",
+    "@timebridge/database": "^0.1.0",
+    "@timebridge/device-adapters": "^0.1.0",
+    "@timebridge/security": "^0.1.0",
+    "cors": "^2.8.6",
+    "express-async-errors": "^3.1.1",
+    "express-rate-limit": "^8.7.0",
+    "helmet": "^8.3.0",
+    "zod": "^4.6.5"
+  },
+  "devDependencies": {
+    "@types/cors": "^2.8.19",
+    "@types/supertest": "^7.2.1",
+    "supertest": "^7.3.0"
+  }
+}

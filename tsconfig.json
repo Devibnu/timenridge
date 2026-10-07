@@ -1,0 +1,16 @@
+{
+  "files": [],
+  "references": [
+    { "path": "./packages/core" },
+    { "path": "./packages/shared" },
+    { "path": "./packages/security" },
+    { "path": "./packages/database" },
+    { "path": "./packages/queue" },
+    { "path": "./packages/device-adapters" },
+    { "path": "./packages/attendance-engine" },
+    { "path": "./packages/sap-adapters" },
+    { "path": "./apps/api" },
+    { "path": "./apps/worker" },
+    { "path": "./apps/scheduler" }
+  ]
+}

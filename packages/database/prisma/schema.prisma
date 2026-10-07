@@ -1,0 +1,458 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Device {
+  id                      String                @id @default(uuid())
+  device_code             String                @unique
+  name                    String
+  vendor                  String?
+  model                   String?
+  serial_number           String?
+  host                    String?
+  port                    Int?
+  protocol                String?
+  status                  DeviceStatus          @default(UNKNOWN)
+  lifecycle_status        DeviceLifecycleStatus @default(REGISTERED)
+  encrypted_credential    String?
+  last_seen_at            DateTime?
+  last_successful_sync_at DateTime?
+  last_error_at           DateTime?
+  last_error_message      String?
+  consecutive_failures    Int                   @default(0)
+  is_active               Boolean               @default(true)
+  created_at              DateTime              @default(now())
+  updated_at              DateTime              @updatedAt
+  events                  AttendanceEvent[]
+  raw_events              AttendanceRawEvent[]
+  mappings                EmployeeMapping[]
+
+  @@map("devices")
+}
+
+model Employee {
+  id                String                    @id @default(uuid())
+  internal_id       String                    @unique
+  name              String
+  created_at        DateTime                  @default(now())
+  updated_at        DateTime                  @updatedAt
+  cycles            AttendanceCycle[]
+  events            AttendanceEvent[]
+  mappings          EmployeeMapping[]
+  shift_assignments EmployeeShiftAssignment[]
+
+  @@map("employees")
+}
+
+model EmployeeMapping {
+  id                 String    @id @default(uuid())
+  device_id          String
+  device_employee_id String
+  employee_id        String
+  sap_employee_id    String?
+  valid_from         DateTime  @default(now())
+  valid_to           DateTime?
+  is_active          Boolean   @default(true)
+  created_at         DateTime  @default(now())
+  updated_at         DateTime  @updatedAt
+  device             Device    @relation(fields: [device_id], references: [id])
+  employee           Employee  @relation(fields: [employee_id], references: [id])
+
+  @@index([device_id, device_employee_id])
+  @@index([employee_id])
+  @@index([sap_employee_id])
+  @@map("employee_mappings")
+}
+
+model Shift {
+  id               String                    @id @default(uuid())
+  shift_code       String                    @unique
+  name             String
+  start_time       String
+  end_time         String
+  crosses_midnight Boolean                   @default(false)
+  is_active        Boolean                   @default(true)
+  created_at       DateTime                  @default(now())
+  updated_at       DateTime                  @updatedAt
+  assignments      EmployeeShiftAssignment[]
+  rules            ShiftRule[]
+
+  @@map("shifts")
+}
+
+model ShiftRule {
+  id                       String   @id @default(uuid())
+  shift_id                 String
+  early_in_minutes         Int      @default(0)
+  late_in_minutes          Int      @default(0)
+  early_out_minutes        Int      @default(0)
+  late_out_minutes         Int      @default(0)
+  duplicate_window_seconds Int      @default(300)
+  break_enabled            Boolean  @default(false)
+  auto_checkout_enabled    Boolean  @default(false)
+  created_at               DateTime @default(now())
+  updated_at               DateTime @updatedAt
+  shift                    Shift    @relation(fields: [shift_id], references: [id], onDelete: Cascade)
+
+  @@index([shift_id])
+  @@map("shift_rules")
+}
+
+model EmployeeShiftAssignment {
+  id             String    @id @default(uuid())
+  employee_id    String
+  shift_id       String
+  effective_from DateTime  @default(now())
+  effective_to   DateTime?
+  created_at     DateTime  @default(now())
+  updated_at     DateTime  @updatedAt
+  employee       Employee  @relation(fields: [employee_id], references: [id], onDelete: Cascade)
+  shift          Shift     @relation(fields: [shift_id], references: [id], onDelete: Cascade)
+
+  @@index([employee_id])
+  @@index([shift_id])
+  @@map("employee_shift_assignments")
+}
+
+model AttendanceRawEvent {
+  id                 String   @id @default(uuid())
+  device_id          String
+  device_employee_id String
+  event_timestamp    DateTime
+  raw_payload        Json
+  source_hash        String
+  received_at        DateTime @default(now())
+  created_at         DateTime @default(now())
+  device             Device   @relation(fields: [device_id], references: [id])
+
+  @@unique([device_id, source_hash])
+  @@index([device_id, device_employee_id])
+  @@index([event_timestamp])
+  @@map("attendance_raw_events")
+}
+
+model AttendanceEvent {
+  id                 String                 @id @default(uuid())
+  event_uid          String                 @unique
+  device_id          String
+  device_employee_id String
+  employee_id        String?
+  sap_employee_id    String?
+  event_date         DateTime               @db.Date
+  event_time         String
+  event_timestamp    DateTime
+  event_type         EventType
+  source             String                 @default("ATTENDANCE_DEVICE")
+  status             EventStatus            @default(READY)
+  created_at         DateTime               @default(now())
+  updated_at         DateTime               @updatedAt
+  device             Device                 @relation(fields: [device_id], references: [id])
+  employee           Employee?              @relation(fields: [employee_id], references: [id], onDelete: Restrict)
+  rule_results       AttendanceRuleResult[]
+
+  @@index([employee_id, event_date])
+  @@index([sap_employee_id])
+  @@index([event_timestamp])
+  @@index([status])
+  @@map("attendance_events")
+}
+
+model AttendanceCycle {
+  id                    String                  @id @default(uuid())
+  employee_id           String
+  sap_employee_id       String?
+  business_date         DateTime                @db.Date
+  shift_id              String?
+  cycle_sequence        Int                     @default(1)
+  check_in_event_id     String?
+  check_out_event_id    String?
+  status                CycleStatus             @default(OPEN)
+  reason                String?
+  created_at            DateTime                @default(now())
+  updated_at            DateTime                @updatedAt
+  AttendanceBatchRecord AttendanceBatchRecord[]
+  employee              Employee                @relation(fields: [employee_id], references: [id])
+
+  @@unique([employee_id, business_date, cycle_sequence])
+  @@index([employee_id, business_date])
+  @@index([status])
+  @@map("attendance_cycles")
+}
+
+model AttendanceRuleResult {
+  id                  String          @id @default(uuid())
+  attendance_event_id String
+  rule_code           String
+  input_data          Json
+  decision            String
+  reason              String
+  created_at          DateTime        @default(now())
+  attendance_event    AttendanceEvent @relation(fields: [attendance_event_id], references: [id], onDelete: Cascade)
+
+  @@index([attendance_event_id])
+  @@map("attendance_rule_results")
+}
+
+model IntegrationBatch {
+  id           String            @id @default(uuid())
+  batch_number String            @unique
+  status       BatchStatus       @default(CREATED)
+  record_count Int               @default(0)
+  generated_at DateTime?
+  uploaded_at  DateTime?
+  created_at   DateTime          @default(now())
+  updated_at   DateTime          @updatedAt
+  files        IntegrationFile[]
+
+  @@index([status])
+  @@map("integration_batches")
+}
+
+model IntegrationFile {
+  id           String           @id @default(uuid())
+  batch_id     String
+  file_name    String
+  file_path    String?
+  record_count Int              @default(0)
+  sha256       String?
+  status       FileStatus       @default(GENERATED)
+  generated_at DateTime?
+  uploaded_at  DateTime?
+  created_at   DateTime         @default(now())
+  updated_at   DateTime         @updatedAt
+  batch        IntegrationBatch @relation(fields: [batch_id], references: [id])
+  responses    SapResponse[]
+
+  @@index([batch_id])
+  @@index([status])
+  @@map("integration_files")
+}
+
+model SapResponse {
+  id               String          @id @default(uuid())
+  batch_id         String
+  file_id          String
+  sap_status       String
+  response_payload Json?
+  processed_at     DateTime?
+  created_at       DateTime        @default(now())
+  file             IntegrationFile @relation(fields: [file_id], references: [id])
+
+  @@index([batch_id])
+  @@index([file_id])
+  @@map("sap_responses")
+}
+
+model AuditLog {
+  id        String   @id @default(uuid())
+  user      String
+  action    String
+  target    String
+  before    Json?
+  after     Json?
+  timestamp DateTime @default(now())
+
+  @@index([target])
+  @@index([timestamp])
+  @@map("audit_logs")
+}
+
+model ProcessingLog {
+  id            String   @id @default(uuid())
+  reference_id  String?
+  stage         String
+  status        String
+  message       String
+  error_details Json?
+  timestamp     DateTime @default(now())
+
+  @@index([reference_id])
+  @@index([stage])
+  @@index([timestamp])
+  @@map("processing_logs")
+}
+
+model User {
+  id            String     @id @default(uuid())
+  email         String     @unique
+  password_hash String
+  status        UserStatus @default(ACTIVE)
+  role          UserRole   @default(OPERATOR)
+  last_login_at DateTime?
+  created_at    DateTime   @default(now())
+  updated_at    DateTime   @updatedAt
+
+  @@map("users")
+}
+
+model SecurityAuditLog {
+  id        String      @id @default(uuid())
+  user_id   String?
+  action    AuditAction
+  target    String?
+  metadata  Json?
+  timestamp DateTime    @default(now())
+
+  @@index([user_id])
+  @@index([action])
+  @@index([timestamp])
+  @@map("security_audit_logs")
+}
+
+model AttendanceBatch {
+  id               String                           @id @default(uuid())
+  batch_identity   String                           @unique
+  correlation_id   String?                          @unique
+  status           BatchStatus                      @default(CREATED)
+  record_count     Int                              @default(0)
+  created_at       DateTime                         @default(now())
+  updated_at       DateTime                         @updatedAt
+  records          AttendanceBatchRecord[]
+  acknowledgements AttendanceBatchAcknowledgement[]
+}
+
+model AttendanceBatchRecord {
+  id                  String            @id @default(uuid())
+  batch_id            String
+  attendance_cycle_id String
+  sap_employee_id     String?
+  payload             Json?
+  status              BatchRecordStatus @default(VALID)
+  reason              String?
+  created_at          DateTime          @default(now())
+  updated_at          DateTime          @updatedAt
+  cycle               AttendanceCycle   @relation(fields: [attendance_cycle_id], references: [id])
+  batch               AttendanceBatch   @relation(fields: [batch_id], references: [id])
+
+  @@unique([batch_id, attendance_cycle_id])
+}
+
+model AttendanceBatchAcknowledgement {
+  id             String          @id @default(uuid())
+  correlation_id String          @unique
+  batch_id       String
+  status         String
+  payload        Json?
+  received_at    DateTime        @default(now())
+  batch          AttendanceBatch @relation(fields: [batch_id], references: [id])
+
+  @@index([batch_id])
+  @@index([correlation_id])
+  @@map("attendance_batch_acknowledgements")
+}
+
+enum DeviceStatus {
+  ONLINE
+  DEGRADED
+  OFFLINE
+  UNKNOWN
+}
+
+enum DeviceLifecycleStatus {
+  REGISTERED
+  ACTIVE
+  DISABLED
+}
+
+enum EventType {
+  IN
+  OUT
+  BREAK_IN
+  BREAK_OUT
+  UNKNOWN
+}
+
+enum EventStatus {
+  RECEIVED
+  VALIDATED
+  MAPPED
+  READY
+  PROCESSING
+  SENT
+  PROCESSED
+  DUPLICATE
+  FAILED
+  SAP_REJECTED
+  REVIEW_REQUIRED
+}
+
+enum CycleStatus {
+  OPEN
+  COMPLETE
+  MISSING_IN
+  MISSING_OUT
+  AMBIGUOUS
+  REVIEW_REQUIRED
+  READY_FOR_SAP
+  SENT_TO_SAP
+}
+
+enum BatchStatus {
+  CREATED
+  READY
+  GENERATED
+  UPLOADED
+  ACKNOWLEDGED
+  PROCESSED
+  PARTIALLY_PROCESSED
+  FAILED
+  SAP_REJECTED
+}
+
+enum FileStatus {
+  GENERATED
+  UPLOADED
+  ACKNOWLEDGED
+  PROCESSED
+  FAILED
+}
+
+enum UserRole {
+  SUPER_ADMIN
+  INTEGRATION_ADMIN
+  OPERATOR
+  AUDITOR
+}
+
+enum UserStatus {
+  ACTIVE
+  DISABLED
+}
+
+enum AuditAction {
+  LOGIN_SUCCESS
+  LOGIN_FAILED
+  LOGOUT
+  ACCOUNT_DISABLED
+  ROLE_CHANGED
+  PASSWORD_CHANGED
+}
+
+enum BatchRecordStatus {
+  VALID
+  INVALID_MISSING_SAP_EMPLOYEE
+  INVALID_MISSING_CHECK_IN
+  INVALID_MISSING_CHECK_OUT
+  INVALID_STATUS
+  INVALID_DATE
+  INVALID_TRACEABILITY
+}
+
+model OutboxEvent {
+  id            String    @id @default(uuid())
+  topic         String
+  payload       Json
+  status        String    @default("PENDING")
+  error_message String?
+  published_at  DateTime?
+  created_at    DateTime  @default(now())
+
+  @@index([status])
+  @@index([created_at])
+  @@map("outbox_events")
+}

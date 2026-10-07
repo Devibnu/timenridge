@@ -1,0 +1,78 @@
+{
+  "authContext": "short-lived JWT signed with configured TimeBridge JWT secret for existing active SUPER_ADMIN; password login not exercised",
+  "unauthenticatedRedirect": "http://localhost:5173/login",
+  "authenticationChecks": {
+    "missingBearerStatus": 401,
+    "invalidBearerStatus": 401,
+    "browserRedirect": "/login"
+  },
+  "attendanceResponses": [
+    {
+      "endpoint": "/api/attendance/raw",
+      "status": 200,
+      "success": true,
+      "dataLength": 1,
+      "meta": {
+        "page": 1,
+        "pageSize": 20,
+        "total": 1,
+        "totalPages": 1
+      },
+      "bearerPresent": true
+    },
+    {
+      "endpoint": "/api/attendance/events",
+      "status": 200,
+      "success": true,
+      "dataLength": 1,
+      "meta": {
+        "page": 1,
+        "pageSize": 20,
+        "total": 1,
+        "totalPages": 1
+      },
+      "bearerPresent": true
+    },
+    {
+      "endpoint": "/api/attendance/rule-results",
+      "status": 200,
+      "success": true,
+      "dataLength": 1,
+      "meta": {
+        "page": 1,
+        "pageSize": 20,
+        "total": 1,
+        "totalPages": 1
+      },
+      "bearerPresent": true
+    },
+    {
+      "endpoint": "/api/attendance/cycles",
+      "status": 200,
+      "success": true,
+      "dataLength": 1,
+      "meta": {
+        "page": 1,
+        "pageSize": 20,
+        "total": 1,
+        "totalPages": 1
+      },
+      "bearerPresent": true
+    }
+  ],
+  "screenshots": [
+    "cycles.png",
+    "events.png",
+    "live-verification.json",
+    "raw.png",
+    "rule-results.png",
+    "unauthenticated-login.png"
+  ],
+  "dashboardVisible": true,
+  "devicesVisible": true,
+  "deviceListApiStatus": 401,
+  "deviceListNote": "Existing /api/devices route returns 401 with bearer because it lacks authenticate middleware.",
+  "logoutStatus": 200,
+  "logoutRedirect": "http://localhost:5173/login",
+  "loginHeadingVisible": true
+}

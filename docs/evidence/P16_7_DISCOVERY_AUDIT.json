@@ -1,0 +1,81 @@
+{
+  "auditDate": "2026-09-29",
+  "environment": {
+    "frontend": "http://localhost:5173/login",
+    "api": "http://localhost:3000",
+    "health": 200,
+    "ready": 200
+  },
+  "browserInspection": {
+    "role": "SUPER_ADMIN (short-lived local token in isolated browser only)",
+    "menu": [
+      "Dashboard",
+      "Raw Attendance",
+      "Attendance Events",
+      "Rule Results",
+      "Attendance Cycles",
+      "Devices"
+    ],
+    "pages": [
+      { "route": "/", "heading": "Dashboard", "state": "visible" },
+      { "route": "/attendance/raw", "heading": "Raw Attendance", "state": "real data" },
+      { "route": "/attendance/events", "heading": "Attendance Events", "state": "real data" },
+      { "route": "/attendance/rule-results", "heading": "Rule Results", "state": "real data" },
+      { "route": "/attendance/cycles", "heading": "Attendance Cycles", "state": "real data" },
+      { "route": "/devices", "heading": "Devices", "state": "API error shown" },
+      { "route": "/devices/new", "heading": "Add Device", "state": "form visible, not submitted" },
+      { "route": "/devices/:id", "heading": "Device Detail", "state": "API error shown" },
+      { "route": "/employee-mappings", "state": "no registered route" }
+    ]
+  },
+  "apiStatus": [
+    { "method": "GET", "path": "/health", "status": 200 },
+    { "method": "GET", "path": "/ready", "status": 200 },
+    { "method": "GET", "path": "/api/auth/me", "status": 200 },
+    { "method": "GET", "path": "/api/attendance/raw", "status": 200, "rows": 1 },
+    { "method": "GET", "path": "/api/attendance/events", "status": 200, "rows": 1 },
+    { "method": "GET", "path": "/api/attendance/rule-results", "status": 200, "rows": 1 },
+    { "method": "GET", "path": "/api/attendance/cycles", "status": 200, "rows": 1 },
+    { "method": "GET", "path": "/api/devices", "status": 401 },
+    { "method": "GET", "path": "/api/employee-mappings", "status": 404 },
+    { "method": "GET", "path": "/api/operations/health", "status": 200 },
+    {
+      "method": "GET",
+      "path": "/api/operations/queues",
+      "status": 200,
+      "implementation": "NOT_CONFIGURED"
+    },
+    { "method": "GET", "path": "/api/operations/devices", "status": 200 },
+    { "method": "GET", "path": "/api/operations/processing", "status": 200 },
+    { "method": "GET", "path": "/api/operations/summary", "status": 200 },
+    { "method": "GET", "path": "/api/operational/redis", "status": 200 },
+    { "method": "GET", "path": "/api/operational/queues/metrics", "status": 200 },
+    { "method": "GET", "path": "/api/operational/queues/failed", "status": 200 },
+    { "method": "GET", "path": "/api/operational/workers", "status": 200 },
+    { "method": "GET", "path": "/api/reconciliation/summary", "status": 200 },
+    { "method": "GET", "path": "/api/reconciliation/batches", "status": 200, "rows": 1 },
+    { "method": "GET", "path": "/api/reconciliation/orphans", "status": 200 }
+  ],
+  "readOnlyModelCounts": {
+    "devices": 1,
+    "employees": 1,
+    "employeeMappings": 1,
+    "shifts": 1,
+    "shiftRules": 1,
+    "employeeShiftAssignments": 1,
+    "attendanceRawEvents": 1,
+    "attendanceEvents": 1,
+    "attendanceCycles": 1,
+    "attendanceRuleResults": 1,
+    "integrationBatches": 0,
+    "integrationFiles": 0,
+    "sapResponses": 0,
+    "attendanceBatches": 1,
+    "attendanceBatchRecords": 1,
+    "attendanceBatchAcknowledgements": 1,
+    "outboxEvents": 1
+  },
+  "writesPerformed": false,
+  "mutatingRoutesCalled": false,
+  "tokenOrPersonalFieldsPersisted": false
+}
