@@ -34,6 +34,9 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Setup MSVC compiler environment
+        uses: ilammy/msvc-dev-cmd@v1
+
       - name: Install Dependencies
         run: npm ci
 
