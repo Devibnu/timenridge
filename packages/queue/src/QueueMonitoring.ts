@@ -1,5 +1,4 @@
-import { Queue } from 'bullmq';
-import { getRedisClient } from './redis';
+import { getQueueDb } from './sqliteQueue';
 
 export interface QueueMetrics {
   waiting: number;
@@ -20,57 +19,47 @@ export interface FailedJobDetails {
 }
 
 export class QueueMonitoring {
-  private queue: Queue;
+  constructor(public readonly queueName: string) {}
 
-  constructor(public readonly queueName: string) {
-    this.queue = new Queue(queueName, {
-      connection: getRedisClient(),
-    });
-  }
-
-  /**
-   * Get metrics for this queue
-   */
   public async getMetrics(): Promise<QueueMetrics> {
-    const jobCounts = await this.queue.getJobCounts(
-      'waiting',
-      'active',
-      'completed',
-      'failed',
-      'delayed',
-    );
+    const db = getQueueDb();
+    const rows = db.prepare(`SELECT status, count(*) as count FROM jobs WHERE queue_name = ? GROUP BY status`).all(this.queueName) as any[];
 
-    return {
-      waiting: jobCounts.waiting || 0,
-      active: jobCounts.active || 0,
-      completed: jobCounts.completed || 0,
-      failed: jobCounts.failed || 0,
-      delayed: jobCounts.delayed || 0,
-    };
+    const metrics: QueueMetrics = { waiting: 0, active: 0, completed: 0, failed: 0, delayed: 0 };
+    for (const row of rows) {
+      if (row.status === 'pending') metrics.waiting = row.count;
+      else if (row.status === 'active') metrics.active = row.count;
+      else if (row.status === 'completed') metrics.completed = row.count;
+      else if (row.status === 'failed') metrics.failed = row.count;
+    }
+    return metrics;
   }
 
-  /**
-   * Get detailed information about failed jobs for DLQ visibility.
-   * Strips out payload/data for security.
-   */
   public async getFailedJobs(start = 0, end = 100): Promise<FailedJobDetails[]> {
-    const failedJobs = await this.queue.getFailed(start, end);
+    const db = getQueueDb();
+    const limit = end - start;
+    const offset = start;
 
-    return failedJobs.map((job) => ({
-      id: job.id || 'unknown',
+    const rows = db.prepare(`
+      SELECT id, name, attempts, error, created_at, updated_at
+      FROM jobs
+      WHERE queue_name = ? AND status = 'failed'
+      ORDER BY updated_at DESC
+      LIMIT ? OFFSET ?
+    `).all(this.queueName, limit, offset) as any[];
+
+    return rows.map((job) => ({
+      id: job.id,
       name: job.name,
-      attemptsMade: job.attemptsMade,
-      failedReason: job.failedReason || 'Unknown error',
-      createdAt: job.timestamp,
-      processedAt: job.processedOn || null,
-      finishedAt: job.finishedOn || null,
+      attemptsMade: job.attempts,
+      failedReason: job.error || 'Unknown error',
+      createdAt: job.created_at,
+      processedAt: null,
+      finishedAt: job.updated_at,
     }));
   }
 
-  /**
-   * Close the queue connection
-   */
   public async close(): Promise<void> {
-    await this.queue.close();
+    // No-op
   }
 }

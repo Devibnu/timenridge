@@ -1,3 +1,5 @@
+import "dotenv/config";
+
 import express from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
@@ -25,9 +27,10 @@ const allowedOrigins = process.env.CORS_ALLOWED_ORIGINS
 app.use(
   cors({
     origin: (origin, callback) => {
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin || allowedOrigins.includes(origin) || origin.startsWith('http://localhost:')) {
         callback(null, true);
       } else {
+        console.log('BLOCKED CORS ORIGIN:', origin);
         callback(new Error('Not allowed by CORS'));
       }
     },
@@ -104,9 +107,11 @@ app.use('/api/operations', operationsRouter);
 app.use('/api/operational', monitoringRouter);
 app.use('/api/attendance', attendanceRouter);
 
-app.get('/', (req, res) => {
-  res.send('TimeBridge API is running');
-});
+// Root route intentionally removed so it can be overridden by desktop/frontend
+
+export { app };
+
+if (require.main === module) {
 
 const server = app.listen(port, () => {
   console.log(`API server listening on port ${port}`);
@@ -135,5 +140,6 @@ const shutdown = async (signal: string) => {
   }
 };
 
-process.on('SIGTERM', () => shutdown('SIGTERM'));
-process.on('SIGINT', () => shutdown('SIGINT'));
+  process.on('SIGTERM', () => shutdown('SIGTERM'));
+  process.on('SIGINT', () => shutdown('SIGINT'));
+}

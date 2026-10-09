@@ -2,25 +2,25 @@
   <section class="dashboard-page">
     <header class="dashboard-heading">
       <div>
-        <p class="dashboard-eyebrow">Operations overview</p>
+        <p class="dashboard-eyebrow">Ikhtisar operasional</p>
         <h1>
-          Welcome back<span v-if="firstName">, {{ firstName }}</span>
+          Selamat datang kembali<span v-if="firstName">, {{ firstName }}</span>
         </h1>
         <p class="dashboard-intro">
-          Your workspace for attendance records, employee identity mapping, and connected devices.
+          Ruang kerja Anda untuk catatan kehadiran, pemetaan identitas karyawan, dan perangkat yang terhubung.
         </p>
       </div>
       <div class="role-chip">
         <span class="role-chip-dot" aria-hidden="true"></span>
-        {{ roleLabel }} access
+        akses {{ roleLabel }}
       </div>
     </header>
 
     <section class="dashboard-section" aria-labelledby="modules-title">
       <div class="section-heading">
         <div>
-          <h2 id="modules-title">Operational modules</h2>
-          <p>Open a workspace area to review current records and configuration.</p>
+          <h2 id="modules-title">Modul operasional</h2>
+          <p>Buka area ruang kerja untuk meninjau catatan dan konfigurasi saat ini.</p>
         </div>
       </div>
 
@@ -45,18 +45,17 @@
 
     <section class="process-card" aria-labelledby="flow-title">
       <div class="process-copy">
-        <p class="dashboard-eyebrow">How the workspace is organized</p>
-        <h2 id="flow-title">From device activity to reviewable records</h2>
+        <p class="dashboard-eyebrow">Bagaimana ruang kerja dikelola</p>
+        <h2 id="flow-title">Dari aktivitas perangkat hingga catatan yang dapat ditinjau</h2>
         <p>
-          TimeBridge brings device attendance into a sequence of raw records, canonical events, rule
-          results, and attendance cycles. Employee Mapping links device identities to employee
-          records for downstream processing.
+          TimeBridge membawa kehadiran perangkat ke dalam urutan catatan mentah, kejadian kanonikal, hasil aturan,
+          dan siklus kehadiran. Pemetaan Karyawan menghubungkan identitas perangkat dengan catatan karyawan untuk pemrosesan lebih lanjut.
         </p>
       </div>
       <div class="process-steps" aria-label="Attendance processing stages">
-        <span>Device</span><i aria-hidden="true">›</i><span>Raw records</span
-        ><i aria-hidden="true">›</i> <span>Events</span><i aria-hidden="true">›</i
-        ><span>Rules &amp; cycles</span>
+        <span>Perangkat</span><i aria-hidden="true">›</i><span>Catatan mentah</span
+        ><i aria-hidden="true">›</i> <span>Kejadian</span><i aria-hidden="true">›</i
+        ><span>Aturan &amp; siklus</span>
       </div>
     </section>
   </section>
@@ -72,36 +71,36 @@ const roleLabel = computed(() => authStore.user?.role.replaceAll('_', ' ') ?? 'U
 
 const modules = [
   {
-    title: 'Raw Attendance',
-    description: 'Review source attendance records received from device integrations.',
+    title: 'Data Mentah Kehadiran',
+    description: 'Tinjau sumber catatan kehadiran yang diterima dari integrasi perangkat.',
     to: '/attendance/raw',
     icon: '↘',
     tone: 'blue',
   },
   {
-    title: 'Attendance Events',
-    description: 'Inspect normalized canonical events and their processing status.',
+    title: 'Kejadian Kehadiran',
+    description: 'Periksa kejadian kanonikal yang dinormalisasi dan status pemrosesannya.',
     to: '/attendance/events',
     icon: '◷',
     tone: 'teal',
   },
   {
-    title: 'Rule Results & Cycles',
-    description: 'Review rule outcomes and attendance cycle records.',
+    title: 'Hasil Aturan & Siklus',
+    description: 'Tinjau hasil aturan dan catatan siklus kehadiran.',
     to: '/attendance/rule-results',
     icon: '≋',
     tone: 'violet',
   },
   {
-    title: 'Employee Mapping',
-    description: 'Manage time-bounded links between device and employee identities.',
+    title: 'Pemetaan Karyawan',
+    description: 'Kelola tautan terikat waktu antara identitas perangkat dan catatan karyawan.',
     to: '/employee-mappings',
     icon: '⇄',
     tone: 'amber',
   },
   {
-    title: 'Devices',
-    description: 'View registered attendance devices and their reported health.',
+    title: 'Perangkat',
+    description: 'Lihat perangkat kehadiran yang terdaftar dan laporan kesehatannya.',
     to: '/devices',
     icon: '▣',
     tone: 'slate',

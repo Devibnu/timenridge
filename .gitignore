@@ -63,3 +63,11 @@ test-overlap.js
 test-workflow.js
 test-zero-duration.js
 test_api.js
+
+# Local SQLite Databases
+packages/database/prisma/dev.db
+packages/database/prisma/dev.db-journal
+
+# Desktop Build Artifacts
+apps/desktop/release/
+apps/desktop/dist/

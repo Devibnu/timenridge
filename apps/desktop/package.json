@@ -1,0 +1,77 @@
+{
+  "name": "@timebridge/desktop",
+  "version": "1.0.0",
+  "description": "TimeBridge Desktop App",
+  "author": "TimeBridge Team",
+  "main": "dist/main.js",
+  "scripts": {
+    "build": "tsc -b",
+    "start": "electron .",
+    "pack": "electron-builder --dir",
+    "dist": "electron-builder"
+  },
+  "dependencies": {
+    "@timebridge/api": "*",
+    "@timebridge/worker": "*",
+    "@timebridge/scheduler": "*",
+    "@timebridge/database": "*",
+    "@timebridge/queue": "*",
+    "better-sqlite3": "^11.1.2",
+    "get-port": "^5.1.1",
+    "electron-updater": "^6.1.7"
+  },
+  "devDependencies": {
+    "electron": "^30.0.1",
+    "electron-builder": "^24.13.3",
+    "typescript": "^5.6.2",
+    "@types/node": "^20.17.0"
+  },
+  "build": {
+    "appId": "com.timebridge.desktop",
+    "productName": "TimeBridge",
+    "electronVersion": "30.0.1",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "dist/**/*",
+      "package.json"
+    ],
+    "extraResources": [
+      {
+        "from": "../../frontend/dist",
+        "to": "frontend",
+        "filter": ["**/*"]
+      },
+      {
+        "from": "template.db",
+        "to": "template.db"
+      }
+    ],
+    "mac": {
+      "target": [
+        {
+          "target": "dmg",
+          "arch": ["arm64"]
+        }
+      ],
+      "icon": "build/icon.icns",
+      "hardenedRuntime": true,
+      "gatekeeperAssess": false
+    },
+    "dmg": {
+      "icon": "build/icon.icns"
+    },
+    "win": {
+      "target": "nsis",
+      "icon": "build/icon.ico"
+    },
+    "linux": {
+      "target": "AppImage"
+    },
+    "asarUnpack": [
+      "**/*.node"
+    ],
+    "npmRebuild": true
+  }
+}

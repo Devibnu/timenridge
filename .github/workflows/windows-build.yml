@@ -1,0 +1,48 @@
+name: Windows Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'apps/**'
+      - 'packages/**'
+      - 'frontend/**'
+
+jobs:
+  build-windows:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+
+      - name: Install Dependencies
+        run: npm ci
+
+      - name: Generate Prisma Client
+        run: |
+          npm run --workspace=@timebridge/database build
+          npx prisma generate --schema=packages/database/prisma/schema.prisma
+
+      - name: Run Automated Tests
+        run: npm run test
+
+      - name: Build Application (Frontend & Backend)
+        run: npm run build:all
+
+      - name: Build Windows Installer (NSIS)
+        run: npm run --workspace=@timebridge/desktop dist
+
+      - name: Upload Windows Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: TimeBridge-Windows-Installer
+          path: apps/desktop/release/*.exe

@@ -7,7 +7,7 @@ console.log('TimeBridge Worker started.');
 let testWorker: WorkerService;
 let rawEventsWorker: WorkerService;
 
-const startWorker = async () => {
+export const startWorker = async () => {
   console.log('Worker is connecting to Redis and listening for jobs...');
 
   // Register a dummy worker for infrastructure validation
@@ -48,10 +48,11 @@ const startWorker = async () => {
   console.log('Workers registered successfully.');
 };
 
-startWorker().catch((err) => {
-  console.error('Worker failed to start', err);
-  process.exit(1);
-});
+if (require.main === module) {
+  startWorker().catch((err) => {
+    console.error('Worker failed to start', err);
+    process.exit(1);
+  });
 
 // Graceful shutdown
 process.on('SIGTERM', async () => {
@@ -65,13 +66,14 @@ process.on('SIGTERM', async () => {
   process.exit(0);
 });
 
-process.on('SIGINT', async () => {
-  console.log('SIGINT received, shutting down workers...');
-  if (testWorker) {
-    await testWorker.close();
-  }
-  if (rawEventsWorker) {
-    await rawEventsWorker.close();
-  }
-  process.exit(0);
-});
+  process.on('SIGINT', async () => {
+    console.log('SIGINT received, shutting down workers...');
+    if (testWorker) {
+      await testWorker.close();
+    }
+    if (rawEventsWorker) {
+      await rawEventsWorker.close();
+    }
+    process.exit(0);
+  });
+}

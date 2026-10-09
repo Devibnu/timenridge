@@ -2,7 +2,7 @@
   <div class="login-container">
     <div class="login-card">
       <h1>TimeBridge Login</h1>
-      <p class="subtitle">Enterprise Attendance Integration Middleware</p>
+      <p class="subtitle">Middleware Integrasi Kehadiran Perusahaan</p>
 
       <form @submit.prevent="handleLogin" class="login-form">
         <div class="form-group">
@@ -11,7 +11,7 @@
         </div>
 
         <div class="form-group">
-          <label for="password">Password</label>
+          <label for="password">Kata Sandi</label>
           <input type="password" id="password" v-model="password" required placeholder="••••••••" />
         </div>
 
@@ -20,7 +20,7 @@
         </div>
 
         <button type="submit" :disabled="loading" class="login-button">
-          {{ loading ? 'Logging in...' : 'Login' }}
+          {{ loading ? 'Masuk...' : 'Masuk' }}
         </button>
       </form>
     </div>

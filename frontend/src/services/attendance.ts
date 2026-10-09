@@ -102,12 +102,12 @@ export async function getAttendancePage<T extends AttendanceRecord>(
 export function humanizeAttendanceError(error: unknown): string {
   if (axios.isAxiosError<ApiErrorBody>(error)) {
     const responseMessage = error.response?.data?.error?.message;
-    if (error.response?.status === 401) return 'Your session has expired. Please sign in again.';
+    if (error.response?.status === 401) return 'Sesi Anda telah berakhir. Silakan masuk kembali.';
     if (error.response?.status === 403)
-      return 'You do not have permission to view attendance records.';
+      return 'Anda tidak memiliki izin untuk melihat data kehadiran.';
     if (responseMessage && error.response?.status && error.response.status < 500) {
       return responseMessage;
     }
   }
-  return 'Attendance records could not be loaded. Try again.';
+  return 'Data kehadiran gagal dimuat. Coba lagi.';
 }

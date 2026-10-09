@@ -2,16 +2,16 @@
   <div class="app-shell">
     <div v-if="menuOpen" class="sidebar-backdrop" @click="menuOpen = false"></div>
     <aside id="primary-navigation" class="sidebar" :class="{ 'sidebar-open': menuOpen }">
-      <router-link class="brand" to="/" aria-label="TimeBridge dashboard" @click="closeMenu">
+      <router-link class="brand" to="/" aria-label="Dasbor TimeBridge" @click="closeMenu">
         <span class="brand-mark" aria-hidden="true">TB</span>
         <span class="brand-copy">
           <strong>TimeBridge</strong>
-          <small>Attendance operations</small>
+          <small>Operasional Kehadiran</small>
         </span>
       </router-link>
 
-      <nav class="primary-nav" aria-label="Main navigation">
-        <p class="nav-label">Workspace</p>
+      <nav class="primary-nav" aria-label="Navigasi utama">
+        <p class="nav-label">Ruang Kerja</p>
         <router-link
           class="nav-link"
           to="/"
@@ -19,10 +19,10 @@
           @click="closeMenu"
         >
           <span class="nav-icon" aria-hidden="true">⌂</span>
-          <span>Dashboard</span>
+          <span>Dasbor</span>
         </router-link>
 
-        <p class="nav-label nav-label-spaced">Attendance</p>
+        <p class="nav-label nav-label-spaced">Kehadiran</p>
         <router-link
           v-for="link in attendanceLinks"
           :key="link.to"
@@ -35,7 +35,7 @@
           <span>{{ link.label }}</span>
         </router-link>
 
-        <p class="nav-label nav-label-spaced">Directory</p>
+        <p class="nav-label nav-label-spaced">Direktori</p>
         <router-link
           class="nav-link"
           to="/employee-mappings"
@@ -43,7 +43,7 @@
           @click="closeMenu"
         >
           <span class="nav-icon" aria-hidden="true">⇄</span>
-          <span>Employee Mapping</span>
+          <span>Pemetaan Karyawan</span>
         </router-link>
         <router-link
           class="nav-link"
@@ -52,13 +52,24 @@
           @click="closeMenu"
         >
           <span class="nav-icon" aria-hidden="true">▣</span>
-          <span>Devices</span>
+          <span>Perangkat</span>
+        </router-link>
+
+        <p class="nav-label nav-label-spaced">Sistem</p>
+        <router-link
+          class="nav-link"
+          to="/download"
+          active-class="nav-link-active"
+          @click="closeMenu"
+        >
+          <span class="nav-icon" aria-hidden="true">↓</span>
+          <span>Download Aplikasi</span>
         </router-link>
       </nav>
 
       <div class="sidebar-footer">
         <span class="sidebar-footer-dot" aria-hidden="true"></span>
-        <span>TimeBridge workspace</span>
+        <span>Ruang Kerja TimeBridge</span>
       </div>
     </aside>
 
@@ -69,7 +80,7 @@
           type="button"
           :aria-expanded="menuOpen"
           aria-controls="primary-navigation"
-          :aria-label="menuOpen ? 'Close navigation menu' : 'Open navigation menu'"
+          :aria-label="menuOpen ? 'Tutup menu navigasi' : 'Buka menu navigasi'"
           @click="menuOpen = !menuOpen"
         >
           <span></span><span></span><span></span>
@@ -84,13 +95,13 @@
             <span class="user-email">{{ authStore.user.email }}</span>
             <span class="user-role">{{ roleLabel }}</span>
           </div>
-          <button class="logout-button" type="button" @click="handleLogout">Log out</button>
+          <button class="logout-button" type="button" @click="handleLogout">Keluar</button>
         </div>
       </header>
 
       <main class="main-content">
         <div class="breadcrumb" aria-label="Breadcrumb">
-          <span>Workspace</span><span aria-hidden="true">/</span><strong>{{ pageTitle }}</strong>
+          <span>Ruang Kerja</span><span aria-hidden="true">/</span><strong>{{ pageTitle }}</strong>
         </div>
         <router-view />
       </main>
@@ -104,10 +115,10 @@ import { useRoute, useRouter } from 'vue-router';
 import { useAuthStore } from '../stores/auth';
 
 const attendanceLinks = [
-  { to: '/attendance/raw', label: 'Raw Attendance' },
-  { to: '/attendance/events', label: 'Attendance Events' },
-  { to: '/attendance/rule-results', label: 'Rule Results' },
-  { to: '/attendance/cycles', label: 'Attendance Cycles' },
+  { to: '/attendance/raw', label: 'Data Mentah Kehadiran' },
+  { to: '/attendance/events', label: 'Kejadian Kehadiran' },
+  { to: '/attendance/rule-results', label: 'Hasil Aturan' },
+  { to: '/attendance/cycles', label: 'Siklus Kehadiran' },
 ];
 
 const route = useRoute();
@@ -116,21 +127,22 @@ const authStore = useAuthStore();
 const menuOpen = ref(false);
 
 const titles: Record<string, string> = {
-  dashboard: 'Dashboard',
-  'device-list': 'Devices',
-  'device-new': 'Add device',
-  'device-detail': 'Device details',
-  'device-edit': 'Edit device',
-  'attendance-raw': 'Raw Attendance',
-  'attendance-events': 'Attendance Events',
-  'attendance-rule-results': 'Rule Results',
-  'attendance-cycles': 'Attendance Cycles',
-  'employee-mappings': 'Employee Mapping',
-  'employee-mapping-new': 'Create mapping',
-  'employee-mapping-edit': 'Edit mapping',
+  dashboard: 'Dasbor',
+  'device-list': 'Perangkat',
+  'device-new': 'Tambah perangkat',
+  'device-detail': 'Detail perangkat',
+  'device-edit': 'Edit perangkat',
+  'attendance-raw': 'Data Mentah Kehadiran',
+  'attendance-events': 'Kejadian Kehadiran',
+  'attendance-rule-results': 'Hasil Aturan',
+  'attendance-cycles': 'Siklus Kehadiran',
+  'employee-mappings': 'Pemetaan Karyawan',
+  'employee-mapping-new': 'Buat pemetaan',
+  'employee-mapping-edit': 'Edit pemetaan',
+  'download': 'Download Aplikasi',
 };
 
-const pageTitle = computed(() => titles[String(route.name)] ?? 'Workspace');
+const pageTitle = computed(() => titles[String(route.name)] ?? 'Ruang Kerja');
 const roleLabel = computed(() => authStore.user?.role.replaceAll('_', ' ') ?? '');
 const initials = computed(() => {
   const email = authStore.user?.email ?? '';

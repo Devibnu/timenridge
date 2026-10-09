@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Worker, Job, Processor } from 'bullmq';
-import { getRedisClient } from './redis';
+import { EventEmitter } from 'events';
+import { getQueueDb, queueEvents } from './sqliteQueue';
 
 export type WorkerState = 'STARTING' | 'READY' | 'PROCESSING' | 'DRAINING' | 'STOPPED' | 'ERROR';
 
@@ -13,76 +12,140 @@ export interface WorkerHealth {
   activeJobs: number;
 }
 
-export class WorkerService<T = any> {
-  private worker: Worker;
+export interface Job<T = any> {
+  id: string;
+  name: string;
+  data: T;
+  opts: any;
+  attemptsMade: number;
+}
+
+export type Processor<T = any> = (job: Job<T>) => Promise<any>;
+
+export class WorkerService<T = any> extends EventEmitter {
   private state: WorkerState = 'STOPPED';
   private startedAt: Date | null = null;
   private lastProcessedJob: string | null = null;
   private lastFailure: string | null = null;
   private activeJobCount = 0;
+  private isPolling = false;
+  private stopped = false;
 
   constructor(
     public readonly queueName: string,
     public readonly workerName: string,
-    processor: Processor<T>,
+    private processor: Processor<T>,
   ) {
+    super();
     this.state = 'STARTING';
 
-    this.worker = new Worker(queueName, processor, {
-      connection: getRedisClient(),
-      name: workerName,
-    });
-
-    this.setupListeners();
+    queueEvents.on(`new_job_${this.queueName}`, () => this.poll());
 
     this.state = 'READY';
     this.startedAt = new Date();
+
+    // Initial poll
+    this.poll();
   }
 
-  private setupListeners() {
-    this.worker.on('active', () => {
-      this.state = 'PROCESSING';
-      this.activeJobCount++;
-    });
+  private async poll() {
+    if (this.isPolling || this.stopped) return;
+    this.isPolling = true;
 
-    this.worker.on('completed', (job: Job) => {
-      this.lastProcessedJob = job.id || null;
-      this.activeJobCount = Math.max(0, this.activeJobCount - 1);
-      if (this.activeJobCount === 0) {
-        this.state = 'READY';
-      }
-    });
+    try {
+      while (!this.stopped) {
+        const job = this.getNextJob();
+        if (!job) {
+          break; // Empty
+        }
 
-    this.worker.on('failed', (job: Job | undefined, error: Error) => {
-      if (job) {
-        this.lastFailure = `Job ${job.id} failed: ${error.message}`;
-      } else {
-        this.lastFailure = `Unknown job failed: ${error.message}`;
-      }
-      this.activeJobCount = Math.max(0, this.activeJobCount - 1);
-      if (this.activeJobCount === 0) {
-        this.state = 'READY';
-      }
-    });
+        this.state = 'PROCESSING';
+        this.activeJobCount++;
+        this.emit('active');
 
-    this.worker.on('error', (err: Error) => {
+        try {
+          await this.processor(job);
+          this.markJobCompleted(job.id);
+          this.lastProcessedJob = job.id;
+          this.emit('completed', job);
+        } catch (error: any) {
+          this.markJobFailed(job, error);
+          this.lastFailure = `Job ${job.id} failed: ${error.message}`;
+          this.emit('failed', job, error);
+        } finally {
+          this.activeJobCount = Math.max(0, this.activeJobCount - 1);
+          if (this.activeJobCount === 0) {
+            this.state = 'READY';
+          }
+        }
+      }
+    } catch (err: any) {
       this.state = 'ERROR';
       this.lastFailure = err.message;
-    });
+      this.emit('error', err);
+    } finally {
+      this.isPolling = false;
+    }
   }
 
-  /**
-   * Gracefully close the worker
-   */
+  private getNextJob(): Job<T> | null {
+    const db = getQueueDb();
+
+    const pickJob = db.transaction(() => {
+      const row = db.prepare(`
+        SELECT * FROM jobs
+        WHERE queue_name = ? AND status = 'pending'
+        ORDER BY created_at ASC LIMIT 1
+      `).get(this.queueName) as any;
+
+      if (!row) return null;
+
+      db.prepare(`
+        UPDATE jobs
+        SET status = 'active', updated_at = ?
+        WHERE id = ?
+      `).run(Date.now(), row.id);
+
+      return row;
+    });
+
+    const jobRow = pickJob();
+    if (!jobRow) return null;
+
+    return {
+      id: jobRow.id,
+      name: jobRow.name,
+      data: JSON.parse(jobRow.data),
+      opts: JSON.parse(jobRow.opts),
+      attemptsMade: jobRow.attempts
+    };
+  }
+
+  private markJobCompleted(id: string) {
+    const db = getQueueDb();
+    db.prepare(`UPDATE jobs SET status = 'completed', updated_at = ? WHERE id = ?`).run(Date.now(), id);
+  }
+
+  private markJobFailed(job: Job<T>, error: Error) {
+    const db = getQueueDb();
+    const attempts = job.attemptsMade + 1;
+    const maxAttempts = job.opts?.attempts || 3;
+    const status = attempts >= maxAttempts ? 'failed' : 'pending';
+
+    db.prepare(`
+      UPDATE jobs
+      SET status = ?, attempts = ?, error = ?, updated_at = ?
+      WHERE id = ?
+    `).run(status, attempts, error.message, Date.now(), job.id);
+  }
+
   public async close(): Promise<void> {
     this.state = 'DRAINING';
-    await this.worker.close();
+    this.stopped = true;
+    queueEvents.removeAllListeners(`new_job_${this.queueName}`);
     this.state = 'STOPPED';
   }
 
-  /**
-   * Get the health and status of this worker
-   */
   public getHealth(): WorkerHealth {
     return {
       name: this.workerName,

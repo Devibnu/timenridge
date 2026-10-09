@@ -44,7 +44,7 @@ export const useAuthStore = defineStore('auth', () => {
         // If fetching user fails, clear auth state
         token.value = null;
         localStorage.removeItem('token');
-        return { success: false, error: 'Failed to load user profile' };
+        return { success: false, error: 'Gagal memuat profil pengguna' };
       }
     } catch (error: any) {
       // On request error, ensure auth state is cleared
@@ -53,7 +53,7 @@ export const useAuthStore = defineStore('auth', () => {
       localStorage.removeItem('token');
       return {
         success: false,
-        error: error.response?.data?.error || 'Login failed',
+        error: error.response?.data?.error || 'Login gagal',
       };
     }
   }

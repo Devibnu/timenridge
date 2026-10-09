@@ -1,0 +1,18 @@
+{
+  "extends": "../../tsconfig.base.json",
+  "compilerOptions": {
+    "outDir": "dist",
+    "rootDir": "src",
+    "module": "NodeNext",
+    "target": "ES2022",
+    "esModuleInterop": true
+  },
+  "include": ["src/**/*"],
+  "references": [
+    { "path": "../../packages/database" },
+    { "path": "../../packages/queue" },
+    { "path": "../../apps/api" },
+    { "path": "../../apps/worker" },
+    { "path": "../../apps/scheduler" }
+  ]
+}

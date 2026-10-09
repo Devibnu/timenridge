@@ -2,57 +2,56 @@
   <section class="mapping-form-page">
     <header class="page-heading">
       <div>
-        <p class="eyebrow">Employee mapping</p>
-        <h1>{{ isEditing ? 'Edit mapping' : 'Create mapping' }}</h1>
+        <p class="eyebrow">Pemetaan pegawai</p>
+        <h1>{{ isEditing ? 'Edit pemetaan' : 'Buat pemetaan' }}</h1>
       </div>
-      <router-link class="button secondary" to="/employee-mappings">Back to mappings</router-link>
+      <router-link class="button secondary" to="/employee-mappings">Kembali ke pemetaan</router-link>
     </header>
 
     <div v-if="!canUpdate" class="notice error" role="alert">
-      You do not have permission to manage employee mappings.
+      Anda tidak memiliki izin untuk mengelola pemetaan pegawai.
     </div>
-    <div v-else-if="loading" class="state-panel" role="status">Loading mapping form…</div>
+    <div v-else-if="loading" class="state-panel" role="status">Memuat formulir pemetaan…</div>
     <div v-else-if="loadError" class="notice error" role="alert">{{ loadError }}</div>
     <div v-else-if="saved" class="notice success" role="status">
       {{ saved }}
-      <router-link to="/employee-mappings">Return to Employee Mapping</router-link>
+      <router-link to="/employee-mappings">Kembali ke Pemetaan Pegawai</router-link>
     </div>
     <form v-else class="form-panel" @submit.prevent="save">
       <div v-if="formError" class="notice error" role="alert">{{ formError }}</div>
       <div v-if="isEditing" class="identity-summary">
         <div>
-          <span>Device</span><strong>{{ selectedDeviceLabel }}</strong>
+          <span>Perangkat</span><strong>{{ selectedDeviceLabel }}</strong>
         </div>
         <div>
-          <span>Device employee ID</span><strong>{{ form.device_employee_id }}</strong>
+          <span>ID pegawai perangkat</span><strong>{{ form.device_employee_id }}</strong>
         </div>
         <div>
-          <span>Employee</span><strong>{{ selectedEmployeeLabel }}</strong>
+          <span>Pegawai</span><strong>{{ selectedEmployeeLabel }}</strong>
         </div>
         <p>
-          Identity fields are fixed for an existing mapping. Change SAP identity or its effective
-          period.
+          Bidang identitas bersifat tetap untuk pemetaan yang ada. Ubah identitas SAP atau periode efektifnya.
         </p>
       </div>
 
       <div v-if="!isEditing" class="form-grid">
         <label class="field">
-          <span>Device</span>
+          <span>Perangkat</span>
           <select v-model="form.device_id" required>
-            <option value="" disabled>Select a device</option>
+            <option value="" disabled>Pilih perangkat</option>
             <option v-for="device in options.devices" :key="device.id" :value="device.id">
               {{ device.name }} ({{ device.device_code }})
             </option>
           </select>
         </label>
         <label class="field">
-          <span>Device employee ID</span>
+          <span>ID pegawai perangkat</span>
           <input v-model.trim="form.device_employee_id" required maxlength="255" />
         </label>
         <label class="field">
-          <span>Employee</span>
+          <span>Pegawai</span>
           <select v-model="form.employee_id" required>
-            <option value="" disabled>Select an employee</option>
+            <option value="" disabled>Pilih pegawai</option>
             <option v-for="employee in options.employees" :key="employee.id" :value="employee.id">
               {{ employee.name }} ({{ employee.internal_id }})
             </option>
@@ -62,24 +61,24 @@
 
       <div class="form-grid">
         <label class="field">
-          <span>SAP employee ID</span>
+          <span>ID pegawai SAP</span>
           <input v-model.trim="form.sap_employee_id" maxlength="255" />
         </label>
         <label class="field">
-          <span>Valid from</span>
+          <span>Berlaku dari</span>
           <input v-model="form.valid_from" type="datetime-local" required />
         </label>
         <label class="field">
-          <span>Valid to <small>(optional)</small></span>
+          <span>Berlaku sampai <small>(opsional)</small></span>
           <input v-model="form.valid_to" type="datetime-local" />
         </label>
       </div>
 
       <p v-if="options.devices.length === 0 || options.employees.length === 0" class="hint">
-        Creating a mapping requires at least one device and one employee.
+        Membuat pemetaan memerlukan setidaknya satu perangkat dan satu pegawai.
       </p>
       <footer class="form-actions">
-        <router-link class="button secondary" to="/employee-mappings">Cancel</router-link>
+        <router-link class="button secondary" to="/employee-mappings">Batal</router-link>
         <button
           class="button primary"
           type="submit"
@@ -87,7 +86,7 @@
             saving || (!isEditing && (!options.devices.length || !options.employees.length))
           "
         >
-          {{ saving ? 'Saving…' : isEditing ? 'Save changes' : 'Create mapping' }}
+          {{ saving ? 'Menyimpan…' : isEditing ? 'Simpan perubahan' : 'Buat pemetaan' }}
         </button>
       </footer>
     </form>
@@ -176,11 +175,11 @@ async function save(): Promise<void> {
   formError.value = '';
   saved.value = '';
   if (!form.valid_from || Number.isNaN(new Date(form.valid_from).getTime())) {
-    formError.value = 'Enter a valid start time.';
+    formError.value = 'Masukkan waktu mulai yang valid.';
     return;
   }
   if (form.valid_to && new Date(form.valid_to).getTime() < new Date(form.valid_from).getTime()) {
-    formError.value = 'Valid to must be at or after Valid from.';
+    formError.value = 'Berlaku sampai harus pada atau setelah Berlaku dari.';
     return;
   }
 
@@ -193,7 +192,7 @@ async function save(): Promise<void> {
     };
     if (isEditing.value) {
       await updateEmployeeMapping(String(route.params.id), period);
-      saved.value = 'Employee mapping updated successfully.';
+      saved.value = 'Pemetaan pegawai berhasil diperbarui.';
     } else {
       await createEmployeeMapping({
         ...period,
@@ -201,7 +200,7 @@ async function save(): Promise<void> {
         device_employee_id: form.device_employee_id.trim(),
         employee_id: form.employee_id,
       });
-      saved.value = 'Employee mapping created successfully.';
+      saved.value = 'Pemetaan pegawai berhasil dibuat.';
     }
   } catch (error) {
     formError.value = employeeMappingErrorMessage(error);
@@ -215,8 +214,6 @@ async function save(): Promise<void> {
 .mapping-form-page {
   width: 100%;
   min-width: 0;
-  max-width: 960px;
-  margin: 0 auto;
   color: #1f2937;
 }
 .page-heading {
@@ -293,10 +290,10 @@ h1 {
 }
 .identity-summary {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-  margin-bottom: 1.25rem;
-  padding: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+  padding: 1.25rem;
   border-radius: 0.5rem;
   background: #f8fafc;
 }
@@ -315,9 +312,9 @@ h1 {
 }
 .form-grid {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 1rem;
-  margin-bottom: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
 }
 .field {
   display: grid;

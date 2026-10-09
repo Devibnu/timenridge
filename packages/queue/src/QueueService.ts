@@ -1,6 +1,5 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { Queue, JobsOptions } from 'bullmq';
-import { getRedisClient } from './redis';
+import { randomUUID } from 'crypto';
+import { getQueueDb, queueEvents } from './sqliteQueue';
 
 export interface EnqueueOptions {
   jobId?: string;
@@ -8,56 +7,42 @@ export interface EnqueueOptions {
 }
 
 export class QueueService {
-  private queue: Queue;
+  constructor(public readonly queueName: string) {}
 
-  constructor(public readonly queueName: string) {
-    this.queue = new Queue(queueName, {
-      connection: getRedisClient(),
-      defaultJobOptions: {
-        attempts: 3,
-        backoff: {
-          type: 'exponential',
-          delay: 2000, // 2s, 4s, 8s
-        },
-        removeOnComplete: {
-          age: 3600, // keep for 1 hour
-          count: 1000,
-        },
-        removeOnFail: {
-          age: 86400, // keep failures for 24 hours
-        },
-      },
-    });
-  }
-
-  /**
-   * Enqueue a job onto this queue with robust default options.
-   * Job identity is enforced via jobId if provided for idempotency.
-   */
   public async enqueue<T = any>(name: string, data: T, opts?: EnqueueOptions): Promise<string> {
-    const jobOpts: JobsOptions = {};
-    if (opts?.jobId) jobOpts.jobId = opts.jobId;
-    if (opts?.delay) jobOpts.delay = opts.delay;
+    const db = getQueueDb();
+    const id = opts?.jobId || randomUUID();
+    const now = Date.now();
 
-    const job = await this.queue.add(name, data, jobOpts);
+    const stmt = db.prepare(`
+      INSERT INTO jobs (id, queue_name, name, data, opts, status, attempts, max_attempts, created_at, updated_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        data = excluded.data,
+        opts = excluded.opts,
+        status = 'pending',
+        updated_at = excluded.updated_at
+    `);
 
-    if (!job.id) {
-      throw new Error('Job enqueued without an ID');
-    }
-    return job.id;
+    stmt.run(
+      id,
+      this.queueName,
+      name,
+      JSON.stringify(data),
+      JSON.stringify(opts || {}),
+      'pending',
+      0,
+      3,
+      now,
+      now
+    );
+
+    queueEvents.emit(`new_job_${this.queueName}`);
+
+    return id;
   }
 
-  /**
-   * Disconnect the queue client.
-   */
   public async close(): Promise<void> {
-    await this.queue.close();
-  }
-
-  /**
-   * Get the underlying BullMQ instance (internal use).
-   */
-  public getBullQueue(): Queue {
-    return this.queue;
+    // No-op
   }
 }

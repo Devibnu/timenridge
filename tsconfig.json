@@ -11,6 +11,7 @@
     { "path": "./packages/sap-adapters" },
     { "path": "./apps/api" },
     { "path": "./apps/worker" },
-    { "path": "./apps/scheduler" }
+    { "path": "./apps/scheduler" },
+    { "path": "./apps/desktop" }
   ]
 }

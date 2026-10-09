@@ -19,7 +19,9 @@
     "dev:api": "npm run --workspace=@timebridge/api dev",
     "dev:worker": "npm run --workspace=@timebridge/worker dev",
     "dev:scheduler": "npm run --workspace=@timebridge/scheduler dev",
-    "dev:frontend": "npm run --workspace=frontend dev"
+    "dev:frontend": "npm run --workspace=frontend dev",
+    "desktop:build": "npm run --workspace=@timebridge/desktop build",
+    "desktop:pack": "npm run build:all && npm run --workspace=@timebridge/desktop pack"
   },
   "devDependencies": {
     "@playwright/test": "^1.63.0",
@@ -34,11 +36,12 @@
     "tsx": "^4.23.15",
     "typescript": "^5.6.2",
     "vitest": "^2.1.1",
-    "vitest-mock-extended": "^3.1.1"
+    "vitest-mock-extended": "^2.0.2"
   },
   "dependencies": {
     "axios": "^1.20.0",
     "bullmq": "^6.3.8",
+    "dotenv": "^18.0.6",
     "express": "^5.2.1",
     "ioredis": "^6.0.0",
     "node-cron": "^4.6.0"

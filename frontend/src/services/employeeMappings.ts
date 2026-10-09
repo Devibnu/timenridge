@@ -114,8 +114,8 @@ export function employeeMappingErrorMessage(error: unknown): string {
   const response = error as {
     response?: { status?: number; data?: { error?: string; message?: string } };
   };
-  if (response.response?.status === 401) return 'Your session has expired. Please sign in again.';
+  if (response.response?.status === 401) return 'Sesi Anda telah berakhir. Silakan masuk kembali.';
   if (response.response?.status === 403)
-    return 'You do not have permission to perform this action.';
-  return response.response?.data?.error ?? response.response?.data?.message ?? 'Request failed.';
+    return 'Anda tidak memiliki izin untuk melakukan tindakan ini.';
+  return response.response?.data?.error ?? response.response?.data?.message ?? 'Permintaan gagal.';
 }

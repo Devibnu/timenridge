@@ -2,11 +2,11 @@
   <section class="device-detail">
     <header class="detail-heading">
       <div>
-        <p class="detail-eyebrow">Connected hardware</p>
-        <h1>Device details</h1>
+        <p class="detail-eyebrow">Perangkat keras terhubung</p>
+        <h1>Detail perangkat</h1>
       </div>
       <div class="detail-actions">
-        <router-link to="/devices" class="detail-back">&larr; Back</router-link>
+        <router-link to="/devices" class="detail-back">&larr; Kembali</router-link>
         <router-link
           v-if="canMutate && device"
           :to="`/devices/${device.id}/edit`"
@@ -20,12 +20,12 @@
           class="detail-button detail-button-secondary"
           :disabled="testing"
         >
-          {{ testing ? 'Testing...' : 'Test Connection' }}
+          {{ testing ? 'Menguji...' : 'Uji Koneksi' }}
         </button>
       </div>
     </header>
 
-    <div v-if="loading" class="detail-state" role="status">Loading device…</div>
+    <div v-if="loading" class="detail-state" role="status">Memuat perangkat...</div>
     <div v-else-if="error" class="detail-state detail-state-error" role="alert">{{ error }}</div>
 
     <div v-else-if="device" class="device-detail-card">
@@ -40,11 +40,11 @@
 
       <div class="device-details-grid">
         <div class="device-detail-field">
-          <p>Device Code</p>
+          <p>Kode Perangkat</p>
           <strong>{{ device.device_code }}</strong>
         </div>
         <div class="device-detail-field">
-          <p>Name</p>
+          <p>Nama</p>
           <strong>{{ device.name }}</strong>
         </div>
         <div class="device-detail-field">
@@ -52,7 +52,7 @@
           <strong>{{ device.vendor || '-' }} / {{ device.model || '-' }}</strong>
         </div>
         <div class="device-detail-field">
-          <p>Serial Number</p>
+          <p>Nomor Seri</p>
           <strong>{{ device.serial_number || '-' }}</strong>
         </div>
         <div class="device-detail-field">
@@ -60,37 +60,37 @@
           <strong>{{ device.host || '-' }} : {{ device.port || '-' }}</strong>
         </div>
         <div class="device-detail-field">
-          <p>Protocol</p>
+          <p>Protokol</p>
           <strong>{{ device.protocol || '-' }}</strong>
         </div>
         <div class="device-detail-field">
-          <p>Lifecycle Status</p>
+          <p>Status Siklus Hidup</p>
           <span class="detail-status" :class="lifecycleClass(device.lifecycle_status)">{{
             device.lifecycle_status
           }}</span>
         </div>
         <div class="device-detail-field">
-          <p>Health Status</p>
+          <p>Status Kesehatan</p>
           <span class="detail-status" :class="healthClass(device.status)">{{ device.status }}</span>
         </div>
         <div class="device-detail-field">
-          <p>Credential Configured?</p>
+          <p>Kredensial Dikonfigurasi?</p>
           <strong :class="device.credential_configured ? 'detail-good' : 'detail-bad'">
-            {{ device.credential_configured ? 'Yes' : 'No' }}
+            {{ device.credential_configured ? 'Ya' : 'Tidak' }}
           </strong>
         </div>
         <div class="device-detail-field">
-          <p>Last Seen</p>
+          <p>Terakhir Terlihat</p>
           <strong>
-            {{ device.last_seen_at ? new Date(device.last_seen_at).toLocaleString() : 'Never' }}
+            {{ device.last_seen_at ? new Date(device.last_seen_at).toLocaleString() : 'Tidak Pernah' }}
           </strong>
         </div>
       </div>
 
       <div v-if="device.last_error_message" class="device-error-detail" role="alert">
-        <strong> Last Error ({{ new Date(device.last_error_at).toLocaleString() }}): </strong>
+        <strong> Kesalahan Terakhir ({{ new Date(device.last_error_at).toLocaleString() }}): </strong>
         <p>{{ device.last_error_message }}</p>
-        <p>Consecutive failures: {{ device.consecutive_failures }}</p>
+        <p>Kegagalan berturut-turut: {{ device.consecutive_failures }}</p>
       </div>
     </div>
   </section>

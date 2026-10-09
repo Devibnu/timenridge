@@ -2,25 +2,25 @@
   <section class="devices-page">
     <header class="devices-heading">
       <div>
-        <p class="devices-eyebrow">Connected hardware</p>
-        <h1>Devices</h1>
-        <p>Review registered attendance devices and their reported connection health.</p>
+        <p class="devices-eyebrow">Perangkat keras terhubung</p>
+        <h1>Perangkat</h1>
+        <p>Tinjau perangkat kehadiran yang terdaftar dan laporan kesehatan koneksinya.</p>
       </div>
       <router-link v-if="canMutate" to="/devices/new" class="device-button device-button-primary">
-        Add device
+        Tambah perangkat
       </router-link>
     </header>
 
     <div v-if="loading" class="device-state" role="status" aria-live="polite">
-      <span class="device-spinner" aria-hidden="true"></span>Loading devices…
+      <span class="device-spinner" aria-hidden="true"></span>Memuat perangkat...
     </div>
     <div v-else-if="error" class="device-state device-error" role="alert">
       <div>
-        <strong>Devices could not be loaded</strong>
+        <strong>Perangkat tidak dapat dimuat</strong>
         <p>{{ error }}</p>
       </div>
       <button class="device-button device-button-secondary" type="button" @click="loadDevices">
-        Try again
+        Coba lagi
       </button>
     </div>
 
@@ -33,11 +33,11 @@
         <table>
           <thead>
             <tr>
-              <th scope="col">Device</th>
+              <th scope="col">Perangkat</th>
               <th scope="col">Vendor / model</th>
-              <th scope="col">Lifecycle</th>
-              <th scope="col">Connection</th>
-              <th scope="col">Actions</th>
+              <th scope="col">Siklus hidup</th>
+              <th scope="col">Koneksi</th>
+              <th scope="col">Aksi</th>
             </tr>
           </thead>
           <tbody>
@@ -60,21 +60,21 @@
                 }}</span>
               </td>
               <td class="device-actions">
-                <router-link :to="`/devices/${device.id}`">View</router-link>
+                <router-link :to="`/devices/${device.id}`">Lihat</router-link>
                 <router-link v-if="canMutate" :to="`/devices/${device.id}/edit`">Edit</router-link>
               </td>
             </tr>
             <tr v-if="devices.length === 0">
               <td colspan="5" class="device-empty">
-                <strong>No devices found</strong>
-                <span>Registered device records will appear here.</span>
+                <strong>Tidak ada perangkat yang ditemukan</strong>
+                <span>Catatan perangkat yang terdaftar akan muncul di sini.</span>
               </td>
             </tr>
           </tbody>
         </table>
       </div>
       <p class="device-table-note">
-        Device status reflects the latest information available from the API.
+        Status perangkat mencerminkan informasi terbaru yang tersedia dari API.
       </p>
     </section>
   </section>

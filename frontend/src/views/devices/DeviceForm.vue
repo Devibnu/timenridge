@@ -2,15 +2,15 @@
   <section class="device-form">
     <header class="device-heading">
       <div>
-        <p class="device-eyebrow">Device configuration</p>
-        <h1>{{ isEditing ? 'Edit device' : 'Add device' }}</h1>
+        <p class="device-eyebrow">Konfigurasi perangkat</p>
+        <h1>{{ isEditing ? 'Edit perangkat' : 'Tambah perangkat' }}</h1>
       </div>
-      <router-link to="/devices" class="device-back">&larr; Back</router-link>
+      <router-link to="/devices" class="device-back">&larr; Kembali</router-link>
     </header>
 
-    <div v-if="loading" class="device-message" role="status">Loading device…</div>
+    <div v-if="loading" class="device-message" role="status">Memuat perangkat...</div>
     <div v-else-if="!canMutate" class="device-message device-message-error" role="alert">
-      You do not have permission to manage devices.
+      Anda tidak memiliki izin untuk mengelola perangkat.
     </div>
     <div v-else-if="error" class="device-message device-message-error" role="alert">
       {{ error }}
@@ -21,18 +21,18 @@
       @submit.prevent="saveDevice"
       class="device-form-panel"
     >
-      <div class="device-grid device-grid-two">
+      <div class="device-grid">
         <div>
-          <label>Device Code *</label>
+          <label>Kode Perangkat *</label>
           <input v-model="form.device_code" type="text" required autocomplete="off" />
         </div>
         <div>
-          <label>Name *</label>
+          <label>Nama *</label>
           <input v-model="form.name" type="text" required autocomplete="off" />
         </div>
       </div>
 
-      <div class="device-grid device-grid-two">
+      <div class="device-grid">
         <div>
           <label>Vendor</label>
           <input v-model="form.vendor" type="text" />
@@ -44,11 +44,11 @@
       </div>
 
       <div>
-        <label>Serial Number</label>
+        <label>Nomor Seri</label>
         <input v-model="form.serial_number" type="text" />
       </div>
 
-      <div class="device-grid device-grid-host">
+      <div class="device-grid">
         <div>
           <label>Host (IP/DNS)</label>
           <input v-model="form.host" type="text" />
@@ -59,9 +59,9 @@
         </div>
       </div>
 
-      <div class="device-grid device-grid-two">
+      <div class="device-grid">
         <div>
-          <label>Protocol</label>
+          <label>Protokol</label>
           <select v-model="form.protocol">
             <option value="TCP">TCP</option>
             <option value="UDP">UDP</option>
@@ -71,7 +71,7 @@
           </select>
         </div>
         <div>
-          <label>Lifecycle Status</label>
+          <label>Status Siklus Hidup</label>
           <select v-model="form.lifecycle_status">
             <option value="REGISTERED">REGISTERED</option>
             <option value="ACTIVE">ACTIVE</option>
@@ -81,23 +81,23 @@
       </div>
 
       <div>
-        <label>Credential (Secret)</label>
+        <label>Kredensial (Rahasia)</label>
         <input
           v-model="form.credential"
           type="password"
-          placeholder="Leave blank to keep existing"
+          placeholder="Biarkan kosong untuk mempertahankan yang ada"
           autocomplete="new-password"
         />
       </div>
 
       <div class="device-checkbox-row">
         <input v-model="form.is_active" id="is_active" type="checkbox" />
-        <label for="is_active">Is active</label>
+        <label for="is_active">Aktif</label>
       </div>
 
       <div class="device-form-actions">
         <button type="submit" :disabled="saving" class="device-button device-button-primary">
-          {{ saving ? 'Saving...' : 'Save Device' }}
+          {{ saving ? 'Menyimpan...' : 'Simpan Perangkat' }}
         </button>
       </div>
     </form>
@@ -196,8 +196,7 @@ async function saveDevice() {
 <style scoped>
 .device-form {
   width: 100%;
-  max-width: 820px;
-  margin: 0 auto;
+  min-width: 0;
 }
 .device-heading {
   display: flex;
@@ -232,8 +231,8 @@ async function saveDevice() {
 }
 .device-form-panel {
   display: grid;
-  gap: 1rem;
-  padding: 1.35rem;
+  gap: 1.5rem;
+  padding: 1.5rem;
   border: 1px solid #e2e8f0;
   border-radius: 0.75rem;
   background: #fff;
@@ -241,13 +240,8 @@ async function saveDevice() {
 }
 .device-grid {
   display: grid;
-  gap: 1rem;
-}
-.device-grid-two {
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-}
-.device-grid-host {
-  grid-template-columns: minmax(0, 2fr) minmax(7rem, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
 }
 .device-grid > div,
 .device-form-panel > div:not(.device-checkbox-row):not(.device-form-actions) {
@@ -330,8 +324,7 @@ async function saveDevice() {
   background: #fff8f8;
 }
 @media (max-width: 620px) {
-  .device-grid-two,
-  .device-grid-host {
+  .device-grid {
     grid-template-columns: minmax(0, 1fr);
   }
   .device-form-panel {

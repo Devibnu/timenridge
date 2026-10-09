@@ -2,18 +2,18 @@
   <section class="attendance-page">
     <div class="attendance-heading">
       <div>
-        <p class="attendance-eyebrow">Attendance operations</p>
+        <p class="attendance-eyebrow">Operasional Kehadiran</p>
         <h1>{{ title }}</h1>
-        <p class="attendance-description">Read-only operational records from TimeBridge.</p>
+        <p class="attendance-description">Catatan operasional hanya-baca dari TimeBridge.</p>
       </div>
-      <span class="read-only-badge">Read only</span>
+      <span class="read-only-badge">Hanya baca</span>
     </div>
 
     <form class="filter-panel" @submit.prevent="applyFilters">
       <label v-for="filter in filters" :key="filter.key" class="filter-field">
         <span>{{ filter.label }}</span>
         <select v-if="filter.options" v-model="filterValues[filter.key]" :aria-label="filter.label">
-          <option value="">All</option>
+          <option value="">Semua</option>
           <option v-for="option in filter.options" :key="option" :value="option">
             {{ option.replaceAll('_', ' ') }}
           </option>
@@ -27,22 +27,22 @@
         />
       </label>
       <div class="filter-actions">
-        <button class="button button-primary" type="submit">Apply filters</button>
-        <button class="button button-secondary" type="button" @click="clearFilters">Clear</button>
+        <button class="button button-primary" type="submit">Terapkan filter</button>
+        <button class="button button-secondary" type="button" @click="clearFilters">Bersihkan</button>
       </div>
     </form>
 
     <div v-if="loading" class="state-panel" role="status" aria-live="polite">
       <span class="loading-spinner" aria-hidden="true"></span>
-      <span>Loading {{ title.toLowerCase() }}…</span>
+      <span>Memuat {{ title.toLowerCase() }}…</span>
     </div>
 
     <div v-else-if="error" class="state-panel error-panel" role="alert">
       <div>
-        <h2>Records could not be loaded</h2>
+        <h2>Catatan tidak dapat dimuat</h2>
         <p>{{ error }}</p>
       </div>
-      <button class="button button-secondary" type="button" @click="loadPage">Try again</button>
+      <button class="button button-secondary" type="button" @click="loadPage">Coba lagi</button>
     </div>
 
     <div v-else class="records-panel">
@@ -73,8 +73,8 @@
             <tr v-if="records.length === 0">
               <td :colspan="columns.length" class="empty-cell">
                 <span class="empty-icon" aria-hidden="true">—</span>
-                <strong>No attendance records found.</strong>
-                <span>Try changing or clearing your filters.</span>
+                <strong>Tidak ada catatan kehadiran yang ditemukan.</strong>
+                <span>Coba ubah atau bersihkan filter Anda.</span>
               </td>
             </tr>
           </tbody>
@@ -83,13 +83,13 @@
 
       <div class="pagination-bar">
         <p>
-          <strong>{{ total }}</strong> {{ total === 1 ? 'record' : 'records' }}
-          <span class="page-indicator">Page {{ page }} of {{ Math.max(totalPages, 1) }}</span>
+          <strong>{{ total }}</strong> catatan
+          <span class="page-indicator">Halaman {{ page }} dari {{ Math.max(totalPages, 1) }}</span>
         </p>
         <div class="pagination-controls">
           <label>
-            <span>Rows per page</span>
-            <select v-model.number="pageSize" aria-label="Rows per page" @change="changePageSize">
+            <span>Baris per halaman</span>
+            <select v-model.number="pageSize" aria-label="Baris per halaman" @change="changePageSize">
               <option :value="20">20</option>
               <option :value="50">50</option>
               <option :value="100">100</option>
@@ -101,7 +101,7 @@
             :disabled="page <= 1 || loading"
             @click="changePage(page - 1)"
           >
-            Previous
+            Sebelumnya
           </button>
           <button
             class="button button-secondary"
@@ -109,7 +109,7 @@
             :disabled="page >= totalPages || loading || totalPages === 0"
             @click="changePage(page + 1)"
           >
-            Next
+            Berikutnya
           </button>
         </div>
       </div>
@@ -157,46 +157,46 @@ const config: Record<
   { title: string; columns: Column[]; filters: FilterDefinition[] }
 > = {
   raw: {
-    title: 'Raw Attendance',
+    title: 'Data Mentah Kehadiran',
     columns: [
-      { key: 'event_timestamp', label: 'Event timestamp', kind: 'date' },
-      { key: 'device_id', label: 'Device ID' },
-      { key: 'device_employee_id', label: 'Device employee ID' },
-      { key: 'source_hash', label: 'Source hash' },
-      { key: 'received_at', label: 'Received at', kind: 'date' },
+      { key: 'event_timestamp', label: 'Stempel waktu kejadian', kind: 'date' },
+      { key: 'device_id', label: 'ID Perangkat' },
+      { key: 'device_employee_id', label: 'ID Karyawan perangkat' },
+      { key: 'source_hash', label: 'Hash sumber' },
+      { key: 'received_at', label: 'Diterima pada', kind: 'date' },
     ],
     filters: [
-      { key: 'deviceId', label: 'Device ID', placeholder: 'Enter device ID' },
+      { key: 'deviceId', label: 'ID Perangkat', placeholder: 'Masukkan ID perangkat' },
       {
         key: 'deviceEmployeeId',
-        label: 'Device employee ID',
-        placeholder: 'Enter device employee ID',
+        label: 'ID Karyawan perangkat',
+        placeholder: 'Masukkan ID karyawan perangkat',
       },
-      { key: 'dateFrom', label: 'From date', type: 'date' },
-      { key: 'dateTo', label: 'To date', type: 'date' },
+      { key: 'dateFrom', label: 'Dari tanggal', type: 'date' },
+      { key: 'dateTo', label: 'Hingga tanggal', type: 'date' },
     ],
   },
   events: {
-    title: 'Attendance Events',
+    title: 'Kejadian Kehadiran',
     columns: [
-      { key: 'event_uid', label: 'Event UID' },
-      { key: 'device', label: 'Device' },
-      { key: 'device_employee_id', label: 'Device employee ID' },
-      { key: 'employee', label: 'Employee' },
-      { key: 'sap_employee_id', label: 'SAP employee ID' },
-      { key: 'event_timestamp', label: 'Event timestamp', kind: 'date' },
-      { key: 'event_type', label: 'Type' },
+      { key: 'event_uid', label: 'UID Kejadian' },
+      { key: 'device', label: 'Perangkat' },
+      { key: 'device_employee_id', label: 'ID Karyawan perangkat' },
+      { key: 'employee', label: 'Karyawan' },
+      { key: 'sap_employee_id', label: 'ID Karyawan SAP' },
+      { key: 'event_timestamp', label: 'Stempel waktu kejadian', kind: 'date' },
+      { key: 'event_type', label: 'Tipe' },
       { key: 'status', label: 'Status', kind: 'status' },
-      { key: 'source', label: 'Source' },
+      { key: 'source', label: 'Sumber' },
     ],
     filters: [
-      { key: 'deviceId', label: 'Device ID', placeholder: 'Enter device ID' },
+      { key: 'deviceId', label: 'ID Perangkat', placeholder: 'Masukkan ID perangkat' },
       {
         key: 'deviceEmployeeId',
-        label: 'Device employee ID',
-        placeholder: 'Enter device employee ID',
+        label: 'ID Karyawan perangkat',
+        placeholder: 'Masukkan ID karyawan perangkat',
       },
-      { key: 'employeeId', label: 'Employee ID', placeholder: 'Enter employee ID' },
+      { key: 'employeeId', label: 'ID Karyawan', placeholder: 'Masukkan ID karyawan' },
       {
         key: 'status',
         label: 'Status',
@@ -216,45 +216,45 @@ const config: Record<
       },
       {
         key: 'eventType',
-        label: 'Event type',
+        label: 'Tipe kejadian',
         options: ['IN', 'OUT', 'BREAK_IN', 'BREAK_OUT', 'UNKNOWN'],
       },
-      { key: 'dateFrom', label: 'From date', type: 'date' },
-      { key: 'dateTo', label: 'To date', type: 'date' },
+      { key: 'dateFrom', label: 'Dari tanggal', type: 'date' },
+      { key: 'dateTo', label: 'Hingga tanggal', type: 'date' },
     ],
   },
   'rule-results': {
-    title: 'Rule Results',
+    title: 'Hasil Aturan',
     columns: [
-      { key: 'attendance_event_id', label: 'Attendance event ID' },
-      { key: 'rule_code', label: 'Rule code' },
-      { key: 'decision', label: 'Decision', kind: 'status' },
-      { key: 'reason', label: 'Reason' },
-      { key: 'created_at', label: 'Created at', kind: 'date' },
+      { key: 'attendance_event_id', label: 'ID kejadian kehadiran' },
+      { key: 'rule_code', label: 'Kode aturan' },
+      { key: 'decision', label: 'Keputusan', kind: 'status' },
+      { key: 'reason', label: 'Alasan' },
+      { key: 'created_at', label: 'Dibuat pada', kind: 'date' },
     ],
     filters: [
-      { key: 'attendanceEventId', label: 'Attendance event ID', placeholder: 'Enter event ID' },
-      { key: 'ruleCode', label: 'Rule code', placeholder: 'Enter rule code' },
-      { key: 'decision', label: 'Decision', placeholder: 'Enter decision' },
-      { key: 'dateFrom', label: 'Created from', type: 'date' },
-      { key: 'dateTo', label: 'Created to', type: 'date' },
+      { key: 'attendanceEventId', label: 'ID Kejadian kehadiran', placeholder: 'Masukkan ID kejadian' },
+      { key: 'ruleCode', label: 'Kode aturan', placeholder: 'Masukkan kode aturan' },
+      { key: 'decision', label: 'Keputusan', placeholder: 'Masukkan keputusan' },
+      { key: 'dateFrom', label: 'Dibuat dari', type: 'date' },
+      { key: 'dateTo', label: 'Dibuat hingga', type: 'date' },
     ],
   },
   cycles: {
-    title: 'Attendance Cycles',
+    title: 'Siklus Kehadiran',
     columns: [
-      { key: 'employee', label: 'Employee' },
-      { key: 'sap_employee_id', label: 'SAP employee ID' },
-      { key: 'business_date', label: 'Business date', kind: 'date' },
-      { key: 'shift_id', label: 'Shift ID' },
-      { key: 'cycle_sequence', label: 'Sequence' },
-      { key: 'check_in_event_id', label: 'IN event ID' },
-      { key: 'check_out_event_id', label: 'OUT event ID' },
+      { key: 'employee', label: 'Karyawan' },
+      { key: 'sap_employee_id', label: 'ID Karyawan SAP' },
+      { key: 'business_date', label: 'Tanggal bisnis', kind: 'date' },
+      { key: 'shift_id', label: 'ID Shift' },
+      { key: 'cycle_sequence', label: 'Urutan' },
+      { key: 'check_in_event_id', label: 'ID kejadian MASUK' },
+      { key: 'check_out_event_id', label: 'ID kejadian KELUAR' },
       { key: 'status', label: 'Status', kind: 'status' },
-      { key: 'reason', label: 'Reason' },
+      { key: 'reason', label: 'Alasan' },
     ],
     filters: [
-      { key: 'employeeId', label: 'Employee ID', placeholder: 'Enter employee ID' },
+      { key: 'employeeId', label: 'ID Karyawan', placeholder: 'Masukkan ID karyawan' },
       {
         key: 'status',
         label: 'Status',
@@ -269,8 +269,8 @@ const config: Record<
           'SENT_TO_SAP',
         ],
       },
-      { key: 'dateFrom', label: 'Business date from', type: 'date' },
-      { key: 'dateTo', label: 'Business date to', type: 'date' },
+      { key: 'dateFrom', label: 'Tanggal bisnis dari', type: 'date' },
+      { key: 'dateTo', label: 'Tanggal bisnis hingga', type: 'date' },
     ],
   },
 };

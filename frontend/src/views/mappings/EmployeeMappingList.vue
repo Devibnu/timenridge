@@ -2,14 +2,14 @@
   <section class="mapping-page">
     <header class="page-heading">
       <div>
-        <p class="eyebrow">People and device identities</p>
-        <h1>Employee Mapping</h1>
+        <p class="eyebrow">Identitas orang dan perangkat</p>
+        <h1>Pemetaan Pegawai</h1>
         <p class="description">
-          Manage time-bounded links between device identities and employees.
+          Kelola tautan berbatas waktu antara identitas perangkat dan pegawai.
         </p>
       </div>
       <router-link v-if="canUpdate" class="button primary" to="/employee-mappings/new">
-        Create mapping
+        Buat pemetaan
       </router-link>
     </header>
 
@@ -18,70 +18,70 @@
 
     <section v-if="canResolve" class="resolve-panel" aria-labelledby="resolve-title">
       <div>
-        <h2 id="resolve-title">Resolve an attendance event</h2>
-        <p>Apply the mapping effective at the canonical event’s timestamp.</p>
+        <h2 id="resolve-title">Selesaikan peristiwa kehadiran</h2>
+        <p>Terapkan pemetaan yang berlaku pada stempel waktu peristiwa kanonikal.</p>
       </div>
       <form class="resolve-form" @submit.prevent="resolveEvent">
         <label class="field">
-          <span>Canonical event ID</span>
-          <input v-model.trim="eventId" required aria-label="Canonical event ID" />
+          <span>ID peristiwa kanonikal</span>
+          <input v-model.trim="eventId" required aria-label="ID peristiwa kanonikal" />
         </label>
         <button class="button primary" type="submit" :disabled="resolving">
-          {{ resolving ? 'Resolving…' : 'Resolve event' }}
+          {{ resolving ? 'Menyelesaikan…' : 'Selesaikan peristiwa' }}
         </button>
       </form>
       <div v-if="resolution" class="resolution-result" role="status">
         <strong>{{ resolution.status }}</strong>
-        <span v-if="resolution.employee_id">Employee ID: {{ resolution.employee_id }}</span>
-        <span v-if="resolution.sap_employee_id">SAP ID: {{ resolution.sap_employee_id }}</span>
+        <span v-if="resolution.employee_id">ID Pegawai: {{ resolution.employee_id }}</span>
+        <span v-if="resolution.sap_employee_id">ID SAP: {{ resolution.sap_employee_id }}</span>
         <span v-if="resolution.reason">{{ resolution.reason }}</span>
       </div>
     </section>
 
     <form class="filters" @submit.prevent="applyFilters">
       <label class="field search-field">
-        <span>Search</span>
-        <input v-model="searchInput" placeholder="Employee, SAP ID, device or device employee ID" />
+        <span>Cari</span>
+        <input v-model="searchInput" placeholder="Pegawai, ID SAP, perangkat atau ID pegawai perangkat" />
       </label>
       <label class="field status-field">
-        <span>Mapping status</span>
+        <span>Status pemetaan</span>
         <select v-model="statusInput">
-          <option value="ALL">All mappings</option>
-          <option value="ACTIVE">Active records</option>
-          <option value="INACTIVE">Inactive records</option>
+          <option value="ALL">Semua pemetaan</option>
+          <option value="ACTIVE">Data aktif</option>
+          <option value="INACTIVE">Data tidak aktif</option>
         </select>
       </label>
       <div class="filter-actions">
-        <button class="button primary" type="submit">Apply</button>
-        <button class="button secondary" type="button" @click="clearFilters">Clear</button>
+        <button class="button primary" type="submit">Terapkan</button>
+        <button class="button secondary" type="button" @click="clearFilters">Bersihkan</button>
       </div>
     </form>
 
     <div v-if="loading" class="state-panel" role="status" aria-live="polite">
-      Loading employee mappings…
+      Memuat pemetaan pegawai…
     </div>
     <div v-else-if="error" class="state-panel error-state" role="alert">
       <div>
-        <h2>Mappings could not be loaded</h2>
+        <h2>Pemetaan gagal dimuat</h2>
         <p>{{ error }}</p>
       </div>
-      <button class="button secondary" type="button" @click="loadMappings">Try again</button>
+      <button class="button secondary" type="button" @click="loadMappings">Coba lagi</button>
     </div>
-    <section v-else class="results-panel" aria-label="Employee mapping results">
+    <section v-else class="results-panel" aria-label="Hasil pemetaan pegawai">
       <div
         class="table-scroll"
         tabindex="0"
-        aria-label="Employee mappings table, horizontally scrollable"
+        aria-label="Tabel pemetaan pegawai, dapat digulir horizontal"
       >
         <table>
           <thead>
             <tr>
-              <th>Employee</th>
-              <th>SAP employee</th>
-              <th>Device identity</th>
-              <th>Effective period</th>
+              <th>Pegawai</th>
+              <th>Pegawai SAP</th>
+              <th>Identitas perangkat</th>
+              <th>Periode efektif</th>
               <th>Status</th>
-              <th v-if="canUpdate">Actions</th>
+              <th v-if="canUpdate">Aksi</th>
             </tr>
           </thead>
           <tbody>
@@ -109,28 +109,28 @@
                   type="button"
                   @click="deactivateId = mapping.id"
                 >
-                  Deactivate
+                  Nonaktifkan
                 </button>
                 <template v-if="deactivateId === mapping.id">
-                  <span>Deactivate this mapping?</span>
+                  <span>Nonaktifkan pemetaan ini?</span>
                   <button
                     class="text-action danger-text"
                     type="button"
                     :disabled="deactivating"
                     @click="deactivate(mapping.id)"
                   >
-                    {{ deactivating ? 'Working…' : 'Confirm' }}
+                    {{ deactivating ? 'Memproses…' : 'Konfirmasi' }}
                   </button>
                   <button class="text-action" type="button" @click="deactivateId = ''">
-                    Cancel
+                    Batal
                   </button>
                 </template>
               </td>
             </tr>
             <tr v-if="mappings.length === 0">
               <td :colspan="canUpdate ? 6 : 5" class="empty-state">
-                <strong>No employee mappings found.</strong>
-                <span>Try changing your search or create a mapping.</span>
+                <strong>Tidak ada pemetaan pegawai ditemukan.</strong>
+                <span>Coba ubah pencarian Anda atau buat pemetaan.</span>
               </td>
             </tr>
           </tbody>
@@ -138,13 +138,13 @@
       </div>
       <footer class="pagination-bar">
         <p>
-          <strong>{{ total }}</strong> {{ total === 1 ? 'mapping' : 'mappings' }}
-          <span>Page {{ page }} of {{ Math.max(totalPages, 1) }}</span>
+          <strong>{{ total }}</strong> pemetaan
+          <span>Halaman {{ page }} dari {{ Math.max(totalPages, 1) }}</span>
         </p>
         <div class="pagination-controls">
           <label
-            >Rows per page
-            <select v-model.number="pageSize" aria-label="Rows per page" @change="changePageSize">
+            >Baris per halaman
+            <select v-model.number="pageSize" aria-label="Baris per halaman" @change="changePageSize">
               <option :value="20">20</option>
               <option :value="50">50</option>
               <option :value="100">100</option>
@@ -156,7 +156,7 @@
             :disabled="page <= 1 || loading"
             @click="changePage(page - 1)"
           >
-            Previous
+            Sebelumnya
           </button>
           <button
             class="button secondary"
@@ -164,7 +164,7 @@
             :disabled="page >= totalPages || loading || totalPages === 0"
             @click="changePage(page + 1)"
           >
-            Next
+            Berikutnya
           </button>
         </div>
       </footer>
@@ -263,7 +263,7 @@ async function deactivate(id: string): Promise<void> {
   notice.value = '';
   try {
     await deactivateEmployeeMapping(id);
-    notice.value = 'Employee mapping deactivated.';
+    notice.value = 'Pemetaan pegawai dinonaktifkan.';
     deactivateId.value = '';
     await loadMappings();
   } catch (requestError) {
@@ -280,7 +280,7 @@ async function resolveEvent(): Promise<void> {
   resolution.value = null;
   try {
     resolution.value = await resolveEmployeeMapping(eventId.value);
-    notice.value = `Event resolution completed: ${resolution.value.status}.`;
+    notice.value = `Penyelesaian peristiwa selesai: ${resolution.value.status}.`;
   } catch (requestError) {
     actionError.value = employeeMappingErrorMessage(requestError);
   } finally {
@@ -289,20 +289,20 @@ async function resolveEvent(): Promise<void> {
 }
 
 function statusLabel(mapping: EmployeeMappingRecord): string {
-  if (!mapping.is_active) return 'Inactive';
+  if (!mapping.is_active) return 'Tidak Aktif';
   const now = Date.now();
-  if (new Date(mapping.valid_from).getTime() > now) return 'Scheduled';
-  if (mapping.valid_to && new Date(mapping.valid_to).getTime() < now) return 'Expired';
-  return 'Active';
+  if (new Date(mapping.valid_from).getTime() > now) return 'Dijadwalkan';
+  if (mapping.valid_to && new Date(mapping.valid_to).getTime() < now) return 'Kedaluwarsa';
+  return 'Aktif';
 }
 
 function statusClass(mapping: EmployeeMappingRecord): string {
   const label = statusLabel(mapping);
-  return label === 'Active' ? 'positive' : label === 'Inactive' ? 'neutral' : 'attention';
+  return label === 'Aktif' ? 'positive' : label === 'Tidak Aktif' ? 'neutral' : 'attention';
 }
 
 function formatPeriod(from: string, to: string | null): string {
-  return `${formatDate(from)} – ${to ? formatDate(to) : 'No end date'}`;
+  return `${formatDate(from)} – ${to ? formatDate(to) : 'Tanpa tanggal akhir'}`;
 }
 
 function formatDate(value: string): string {

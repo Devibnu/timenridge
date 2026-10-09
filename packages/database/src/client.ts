@@ -1,15 +1,16 @@
 import { PrismaClient } from '@prisma/client';
+import { jsonExtension } from './jsonExtension';
 
 declare global {
   // eslint-disable-next-line no-var
-  var prisma: PrismaClient | undefined;
+  var prisma: any | undefined;
 }
 
-export const prisma =
-  global.prisma ||
-  new PrismaClient({
-    log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
-  });
+const basePrisma = new PrismaClient({
+  log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
+});
+
+export const prisma = global.prisma || basePrisma.$extends(jsonExtension);
 
 if (process.env.NODE_ENV !== 'production') {
   global.prisma = prisma;
@@ -24,14 +25,9 @@ export class TransactionManager {
    * @param callback Function to execute with the transaction client.
    */
   static async execute<T>(
-    callback: (
-      tx: Omit<
-        PrismaClient,
-        '$connect' | '$disconnect' | '$on' | '$transaction' | '$use' | '$extends'
-      >,
-    ) => Promise<T>,
+    callback: (tx: any) => Promise<T>,
   ): Promise<T> {
-    return await prisma.$transaction(async (tx) => {
+    return await prisma.$transaction(async (tx: any) => {
       return await callback(tx);
     });
   }

@@ -8,6 +8,7 @@ import DeviceDetail from '../views/devices/DeviceDetail.vue';
 import AttendanceList from '../views/attendance/AttendanceList.vue';
 import EmployeeMappingList from '../views/mappings/EmployeeMappingList.vue';
 import EmployeeMappingForm from '../views/mappings/EmployeeMappingForm.vue';
+import Download from '../views/Download.vue';
 import { useAuthStore } from '../stores/auth';
 
 const router = createRouter({
@@ -87,6 +88,11 @@ const router = createRouter({
           path: 'employee-mappings/:id/edit',
           name: 'employee-mapping-edit',
           component: EmployeeMappingForm,
+        },
+        {
+          path: 'download',
+          name: 'download',
+          component: Download,
         },
       ],
     },

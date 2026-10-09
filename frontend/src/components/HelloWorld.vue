@@ -15,10 +15,10 @@ const count = ref(0);
       <img :src="viteLogo" class="vite" alt="Vite logo" />
     </div>
     <div>
-      <h1>Get started</h1>
-      <p>Edit <code>src/App.vue</code> and save to test <code>HMR</code></p>
+      <h1>Mulai</h1>
+      <p>Edit <code>src/App.vue</code> dan simpan untuk menguji <code>HMR</code></p>
     </div>
-    <button type="button" class="counter" @click="count++">Count is {{ count }}</button>
+    <button type="button" class="counter" @click="count++">Hitungan adalah {{ count }}</button>
   </section>
 
   <div class="ticks"></div>
@@ -28,19 +28,19 @@ const count = ref(0);
       <svg class="icon" role="presentation" aria-hidden="true">
         <use href="/icons.svg#documentation-icon"></use>
       </svg>
-      <h2>Documentation</h2>
-      <p>Your questions, answered</p>
+      <h2>Dokumentasi</h2>
+      <p>Pertanyaan Anda, terjawab</p>
       <ul>
         <li>
           <a href="https://vite.dev/" target="_blank">
             <img class="logo" :src="viteLogo" alt="" />
-            Explore Vite
+            Jelajahi Vite
           </a>
         </li>
         <li>
           <a href="https://vuejs.org/" target="_blank">
             <img class="button-icon" :src="vueLogo" alt="" />
-            Learn more
+            Pelajari lebih lanjut
           </a>
         </li>
       </ul>
@@ -49,8 +49,8 @@ const count = ref(0);
       <svg class="icon" role="presentation" aria-hidden="true">
         <use href="/icons.svg#social-icon"></use>
       </svg>
-      <h2>Connect with us</h2>
-      <p>Join the Vite community</p>
+      <h2>Terhubung dengan kami</h2>
+      <p>Bergabung dengan komunitas Vite</p>
       <ul>
         <li>
           <a href="https://github.com/vitejs/vite" target="_blank">
