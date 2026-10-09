@@ -38,6 +38,8 @@ jobs:
         uses: ilammy/msvc-dev-cmd@v1
 
       - name: Install Dependencies
+        env:
+          GYP_MSVS_VERSION: '2022'
         run: npm ci
 
       - name: Generate Prisma Client
