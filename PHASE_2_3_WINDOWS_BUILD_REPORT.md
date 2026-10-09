@@ -1,32 +1,29 @@
-# Laporan Build Windows (Fase 2.3 - Langkah 23 - Fix Native Dependency)
+# Laporan Build Windows (Fase 2.3 - Langkah 33 - Fix Invalid NPM Config)
 
 ## 1. Status Workflow
 **Status Saat Ini:** Menunggu Eksekusi Ulang (Pending Push).
-Workflow sempat dihentikan (gagal) pada tahap _Install Dependencies_ akibat anomali instalasi dependensi *native* C++ (`better-sqlite3`).
+Workflow sempat gagal karena adanya opsi npm `msvs_version` yang tidak valid (deprecated di npm versi modern).
 
 ## 2. Root Cause
-*   Kegagalan terjadi karena `prebuild-install` tidak dapat menemukan _binary_ praprakit (prebuilt) `better-sqlite3` yang sesuai untuk lingkungan `windows-latest` dengan Node.js 20.x, sehingga proses *fallback* ke kompilasi manual (melalui `node-gyp rebuild`) terpicu.
-*   Namun, `node-gyp` terhenti (*exit code 1*) karena ia tidak dapat secara otomatis mendeteksi keberadaan *Visual Studio toolchain* di mesin *runner* dan berpotensi kehilangan lingkungan Python 3 untuk orkestrasi skrip gyp.
+* Kegagalan pada instalasi `better-sqlite3` sebelumnya memicu upaya menyetel lingkungan compiler C++ menggunakan `npm config set msvs_version 2022`.
+* Sayangnya, lingkungan `npm` versi v10+ (pada Node.js 20) sudah tidak lagi mendukung variabel *msvs_version*, memicu *fatal error* "invalid npm option".
+* Secara bawaan (default), jika _Python 3_ sudah tersedia (yang mana telah kita tambahkan lewat `setup-python@v5`), versi modern dari `node-gyp` sudah cukup cerdas untuk otomatis mendeteksi _Visual Studio build tools 2022_ di lingkungan `windows-latest` Github Actions.
 
-## 3. Strategi Perbaikan & Pembaruan
-Alih-alih menambahkan instruksi instalasi Visual Studio (yang sangat berat dan membuang waktu CI), saya memanfaatkan *toolchain* (VS 2022) yang sebenarnya **sudah ter-install bawaan** di `windows-latest`:
-1.  **Menambahkan `actions/setup-python@v5`**: Menyediakan runtime Python 3.11 secara eksplisit untuk menjamin _scripting engine_ `node-gyp` dapat berjalan.
-2.  **Konfigurasi msvs_version**: Menyelipkan perintah `npm config set msvs_version 2022` tepat sebelum `npm ci`. Ini memaksa `node-gyp` merujuk ke instalasi VS 2022 yang telah eksis, memungkinkannya mengompilasi ulang _binary_ `better-sqlite3` untuk Node (serta nantinya untuk siklus `electron-builder` `npmRebuild`) secara lancar tanpa hambatan _missing build tools_.
+## 3. Strategi Perbaikan
+1. **Menghapus Konfigurasi Tidak Valid**: Baris `npm config set msvs_version 2022` telah dihapus sepenuhnya dari alur _workflow_.
+2. **Mempertahankan Lingkungan Python**: Modul aksi `actions/setup-python@v5` tetap dipertahankan karena Python terbukti vital bagi stabilitas dan mesin pencarian (discovery) milik `node-gyp`.
+3. **Instalasi Bersih**: Tahap "Install Dependencies" kini hanya berisi eksekusi perintah `npm ci` polos, membiarkan npm v10 dan `node-gyp` melakukan resolusi otomatis.
 
 ## 4. Pemeriksaan yang Dijalankan
-*   Pemeriksaan logika _workflow_ (ketersediaan *caching*, *Node version*, struktur urutan Prisma, Test, Build, Dist).
-*   Validasi berkas package.json: Mengonfirmasi versi _better-sqlite3_ (`^11.1.2`) yang valid dan butuh dukungan _N-API_ kompilasi (menghindari pergantian *version lock* yang merusak macOS _local testing_).
-*   Semua tes, kompilasi, atau instalasi lokal di macOS **tidak dijalankan ulang di sini** karena ini murni isu kompilasi OS Windows di perantara GitHub Actions (cross-platform tooling). _Business logic_ dan arsitektur database tidak disentuh.
+* Mengaudit bahwa tidak ada opsi npm kedaluwarsa lain yang digunakan di `.github/workflows/windows-build.yml`.
+* Memastikan semua tahapan vital lainnya (Prisma Generate, Vitest, Build All, dan Distribusi NSIS) tetap pada urutan yang benar dan kokoh.
+* Tidak ada pengabaian peringatan atau `|| true` yang menutupi error di tahap ini.
 
-## 5. Risiko yang Tersisa
-*   Durasi *workflow* berpotensi meningkat beberapa detik/menit akibat keharusan kompilasi C++ _node-gyp rebuild_ di Windows.
-*   Karena saya belum menguji langsung di server Windows yang sesungguhnya (tugas agen terbatas di macOS saat ini), *workflow* tetap membutuhkan verifikasi lapangan di GitHub Actions.
-
-## 6. Uji Ulang (Langkah Anda Berikutnya)
+## 5. Uji Ulang (Langkah Anda Berikutnya)
 Terapkan perbaikan *workflow* ini dengan *push* ke branch `feature/desktop-sqlite-schema` Anda:
 ```bash
 git add .github/workflows/windows-build.yml
-git commit -m "ci: fix node-gyp native dependency build by setting msvs_version and python"
+git commit -m "ci: remove invalid npm msvs_version config"
 git push origin feature/desktop-sqlite-schema
 ```
-Lalu pantau tab *Actions* di repositori Github Anda untuk memvalidasi fase kompilasinya.
+Pantau hasil akhirnya di antarmuka GitHub Actions.
