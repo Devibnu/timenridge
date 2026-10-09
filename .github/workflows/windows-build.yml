@@ -5,10 +5,15 @@ on:
   push:
     branches:
       - main
+      - feature/desktop-sqlite-schema
     paths:
       - 'apps/**'
       - 'packages/**'
       - 'frontend/**'
+      - 'package.json'
+      - 'package-lock.json'
+      - 'tsconfig.json'
+      - '.github/workflows/**'
 
 jobs:
   build-windows:
