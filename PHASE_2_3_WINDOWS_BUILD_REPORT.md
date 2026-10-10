@@ -6,13 +6,14 @@ Workflow sempat gagal pada tahap *Install Dependencies* karena `node-gyp rebuild
 
 ## 2. Root Cause Aktual
 * `prebuild-install` gagal menemukan *binary* praprakit yang sesuai untuk `better-sqlite3` di platform `win32-x64` dengan Node.js 20.20.2. Ini memaksa kompilasi balik dari *source code*.
-* Saat melakukan _rebuild_, modul `node-gyp` tidak dapat secara cerdas mendeteksi *Visual Studio Build Tools* yang sebetulnya sudah ada di dalam sistem operasi *runner* `windows-latest`. Hal ini sering terjadi bila konfigurasi variabel lingkungan untuk C++ dan Windows SDK belum diaktifkan atau _registry_ lokal tidak terpetakan dengan benar.
+* Analisis log lanjutan menemukan bahwa `node-gyp` sejatinya **sudah berhasil mendeteksi Visual Studio 2022** berkat lingkungan yang disiapkan oleh aksi `ilammy/msvc-dev-cmd`. 
+* Namun, *crash* terjadi saat `node-gyp` mengeksekusi skrip tambahan PowerShell untuk memvalidasi kompiler tersebut. PowerShell menghasilkan teks/output (*stdout*) yang terlalu besar sehingga **menabrak limit ukuran buffer (1MB/200KB)** dari fungsi `child_process.execFile` milik `node-gyp` lawas.
+* Pesan error-nya adalah: `Error [ERR_CHILD_PROCESS_STDIO_MAXBUFFER]: stdout maxBuffer length exceeded` yang kemudian diartikan keliru sebagai "Could not find Visual Studio" oleh pembungkus gagal-aman (fail-safe) npm.
 
-## 3. Strategi Perbaikan Terpilih (Disetujui Opsi A)
-Strategi yang digunakan adalah **Memaksa node-gyp menggunakan Visual Studio 2022 lewat Environment Variable (`GYP_MSVS_VERSION`)**.
-1. **Injeksi `GYP_MSVS_VERSION: '2022'`**: Variabel ini disuntikkan secara langsung di langkah *Install Dependencies* (`npm ci`). Hal ini mematikan perilaku `node-gyp` yang meraba-raba sistem untuk mendeteksi instalasi Visual Studio, memaksanya untuk memanfaatkan _MSVC_ yang sudah dibangun oleh `ilammy/msvc-dev-cmd@v1`.
-2. **Menggunakan `ilammy/msvc-dev-cmd@v1`**: Aksi resmi ini dipertahankan karena ia bertugas mengekspos jalur *compiler* (`cl.exe`) C++ agar siap digunakan oleh konfigurasi MSVS 2022 tadi.
-3. **Mempertahankan Kompatibilitas Versi**: Versi `better-sqlite3` pada masing-masing _package_ maupun logika program Node.js/Electron tidak disentuh demi keamanan fungsional.
+## 3. Strategi Perbaikan Lanjutan
+Strategi yang digunakan di iterasi ini adalah **Injeksi node-gyp lokal (devDependencies) dan MSVC Diagnostics**.
+1. **Injeksi Langkah Diagnostik**: Menjalankan `where cl`, `cl`, dsb. sebelum kompilasi untuk membuktikan lewat log bahwa kompiler MSVC sudah terpanggil.
+2. **Pembaruan node-gyp via `devDependencies`**: Menambahkan `node-gyp@12.4.0` ke dalam *devDependencies* dari *monorepo root*. Ini adalah jalan keluar yang aman karena npm secara otomatis meletakkan _binary_ `node-gyp` lokal tersebut di urutan teratas `PATH` (`node_modules/.bin`) saat mengeksekusi *install scripts*, sehingga modul `better-sqlite3` akan menggunakannya tanpa terpengaruh oleh *bundle* usang milik `npm`.
 
 ## 4. Pemeriksaan yang Dijalankan
 * Mengonfirmasi bahwa paket `better-sqlite3` yang berada di ruang lingkup (*workspace*) tetap pada versinya saat ini dan mendukung proses kompilasi via `node-gyp` di Node.js 20.

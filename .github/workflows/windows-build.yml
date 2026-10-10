@@ -37,6 +37,13 @@ jobs:
       - name: Setup MSVC compiler environment
         uses: ilammy/msvc-dev-cmd@v1
 
+      - name: MSVC Diagnostics
+        run: |
+          where cl
+          cl
+          node -v
+          npm -v
+
       - name: Install Dependencies
         env:
           GYP_MSVS_VERSION: '2022'

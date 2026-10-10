@@ -7,7 +7,17 @@ Berdasarkan pengecekan konfigurasi `package.json` dan `package-lock.json`, hiera
 
 Perbedaan versi ini memaksa `npm ci` untuk mengelola dua versi *native module* secara paralel. Ketika prebuilt binary untuk lingkungan Node 20.x pada Windows x64 gagal diunduh untuk salah satu atau kedua versi tersebut, `node-gyp rebuild` terpicu.
 
-## 2. Analisis Opsi A & Opsi B
+## 2. Analisis Lanjutan (Error maxBuffer node-gyp)
+Dari log instalasi terbaru, terungkap bahwa `node-gyp` sebenarnya *berhasil* menyadari bahwa ia sedang berada di dalam *VS Command Prompt* dan telah menemukan jalur instalasi *Visual Studio 2022*. 
+Namun, `node-gyp` gagal pada tahap akhir verifikasi akibat suatu kutu (*bug*) di skrip pelacakannya (saat mengeksekusi *PowerShell* untuk memastikan versi VS > 2017). Pesan error yang dihasilkan adalah:
+`Error [ERR_CHILD_PROCESS_STDIO_MAXBUFFER]: stdout maxBuffer length exceeded`
+
+Ini mengindikasikan bahwa keluaran dari PowerShell terlalu besar dan melampaui batas *buffer* `child_process.execFile` bawaan dari `node-gyp` versi lawas yang di-paket bersama `npm` v10.x.
+
+**Opsi D: Menambahkan node-gyp ke devDependencies (Paling Aman)**
+Menambahkan `node-gyp@12.4.0` ke dalam `devDependencies` di file `package.json` root. Karena npm selalu memprioritaskan path lokal `node_modules/.bin` di atas path internal bundlenya saat menjalankan skrip, instalasi lokal ini akan secara otomatis menggantikan `node-gyp` versi lawas ketika proses `better-sqlite3` melakukan instalasi. Opsi ini 100% aman karena tidak menyentuh konfigurasi global npm maupun versi Node.js.
+
+## 3. Analisis Opsi A, B, & C
 **Opsi A: Menambahkan environment variable `GYP_MSVS_VERSION: '2022'`**
 *   **Kelebihan**: Aksi `ilammy/msvc-dev-cmd@v1` sudah menyiapkan jalur MSVC. Dengan menambahkan env `GYP_MSVS_VERSION: '2022'`, `node-gyp` secara eksplisit berhenti mencari Visual Studio via _vswhere_ dan langsung menggunakan kompiler yang ada. Ini tidak menyentuh kode aplikasi dan mempertahankan fungsionalitas murni paket `queue`.
 *   **Kekurangan**: Proses instalasi CI memakan waktu ekstra karena kompilasi C++ *native* untuk dua modul yang berbeda.
