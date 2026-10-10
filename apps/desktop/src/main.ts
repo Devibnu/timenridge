@@ -1,4 +1,5 @@
 import { app as electronApp, BrowserWindow } from 'electron';
+
 import path from 'path';
 import express from 'express';
 import getPort from 'get-port';

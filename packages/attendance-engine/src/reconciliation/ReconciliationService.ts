@@ -208,7 +208,7 @@ export class ReconciliationService {
         sapResult:
           ack && ack.payload
             ? this.extractRecordResultFromAck(
-                ack.payload as Record<string, unknown>,
+                ack.payload as any,
                 r.sap_employee_id,
               )
             : null,
@@ -286,7 +286,7 @@ export class ReconciliationService {
     };
 
     if (filter.status)
-      whereClause.status = filter.status as import('@prisma/client').$Enums.BatchStatus;
+      whereClause.status = filter.status as any;
     if (filter.correlationId) whereClause.correlation_id = filter.correlationId;
 
     const total = await this.prisma.attendanceBatch.count({ where: whereClause });

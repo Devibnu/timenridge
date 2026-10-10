@@ -86,7 +86,7 @@ export class AttendanceBatchEngine {
             where: { id: existingRecord.id },
             data: {
               sap_employee_id: cycle.sap_employee_id,
-              payload: payload as Prisma.InputJsonValue,
+              payload: payload as any,
               status: validation.status,
               reason: validation.reason,
             },
@@ -97,7 +97,7 @@ export class AttendanceBatchEngine {
               batch_id: batch.id,
               attendance_cycle_id: cycle.id,
               sap_employee_id: cycle.sap_employee_id,
-              payload: payload as Prisma.InputJsonValue,
+              payload: payload as any,
               status: validation.status,
               reason: validation.reason,
             },
@@ -118,7 +118,7 @@ export class AttendanceBatchEngine {
       return {
         batchId: batch.id,
         batchIdentity: batch.batch_identity,
-        status: batch.status,
+        status: batch.status as any,
         totalEvaluated: cycles.length,
         eligibleCount,
         excludedCount,

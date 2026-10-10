@@ -70,7 +70,7 @@ export class EmployeeMappingManager {
       },
       select: { valid_from: true, valid_to: true },
     });
-    const overlaps = candidates.filter((candidate) =>
+    const overlaps = candidates.filter((candidate: any) =>
       mappingRangesOverlap({ valid_from, valid_to: valid_to ?? null }, candidate),
     );
 
@@ -128,7 +128,7 @@ export class EmployeeMappingManager {
       },
       select: { valid_from: true, valid_to: true },
     });
-    const overlaps = candidates.filter((candidate) =>
+    const overlaps = candidates.filter((candidate: any) =>
       mappingRangesOverlap({ valid_from: newValidFrom, valid_to: newValidTo }, candidate),
     );
 

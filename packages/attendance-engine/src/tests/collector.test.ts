@@ -54,22 +54,18 @@ describe('RawAttendanceCollector', () => {
     last_successful_sync_at: new Date('2026-09-23T10:00:00Z'),
   };
 
-  let mockAdapter: import('../collector/RawAttendanceCollector').RawAttendanceCollector;
+  let mockAdapter: any;
 
   beforeEach(() => {
     vi.clearAllMocks();
 
     mockAdapter = {
-      // @ts-expect-error vitest-mock-extended typing mismatch
-      connect: vi.fn().mockResolvedValue(),
-      // @ts-expect-error vitest-mock-extended typing mismatch
-      disconnect: vi.fn().mockResolvedValue(),
-      // @ts-expect-error vitest-mock-extended typing mismatch
-      getAttendanceEvents: vi.fn().mockResolvedValue(),
+        connect: vi.fn().mockResolvedValue(undefined as never),
+        disconnect: vi.fn().mockResolvedValue(undefined as never),
+        getAttendanceEvents: vi.fn().mockResolvedValue(undefined as never),
     };
 
-    // @ts-expect-error vitest-mock-extended typing mismatch
-    DeviceAdapterFactory.create.mockReturnValue(mockAdapter as never);
+    vi.mocked(DeviceAdapterFactory.create).mockReturnValue(mockAdapter as never);
   });
 
   it('P5-COLLECT-001: should collect raw events successfully', async () => {
@@ -94,8 +90,7 @@ describe('RawAttendanceCollector', () => {
         source_hash: 'h2',
       },
     ];
-    // @ts-expect-error vitest-mock-extended typing mismatch
-    mockAdapter.getAttendanceEvents.mockResolvedValue(records as never);
+    (mockAdapter.getAttendanceEvents as any).mockResolvedValue(records as never);
 
     vi.mocked(prisma.attendanceRawEvent.createMany).mockResolvedValue({ count: 2 } as never);
     vi.mocked(prisma.device.update).mockResolvedValue({ id: 'dev-123', is_active: true } as never);
@@ -118,7 +113,6 @@ describe('RawAttendanceCollector', () => {
   });
 
   it('P5-COLLECT-002: should handle inactive device', async () => {
-    // @ts-expect-error vitest-mock-extended typing mismatch
     vi.mocked(prisma.device.findUnique).mockResolvedValue({
       ...mockDevice,
       is_active: false,
@@ -128,8 +122,7 @@ describe('RawAttendanceCollector', () => {
 
     expect(result.status).toBe('ERROR');
     expect(result.error).toBe('Device is not active');
-    // @ts-expect-error vitest-mock-extended typing mismatch
-    expect(mockAdapter.connect).not.toHaveBeenCalled();
+    expect((mockAdapter.connect as any)).not.toHaveBeenCalled();
   });
 
   it('P5-ERR-001: should handle connection error and update device state to OFFLINE', async () => {
@@ -137,8 +130,7 @@ describe('RawAttendanceCollector', () => {
       id: 'dev-123',
       is_active: true,
     } as never);
-    // @ts-expect-error vitest-mock-extended typing mismatch
-    mockAdapter.connect.mockRejectedValue(
+    (mockAdapter.connect as any).mockRejectedValue(
       new DeviceAdapterError('CONNECTION_FAILED', 'Conn failed'),
     );
 
@@ -162,8 +154,7 @@ describe('RawAttendanceCollector', () => {
       id: 'dev-123',
       is_active: true,
     } as never);
-    // @ts-expect-error vitest-mock-extended typing mismatch
-    mockAdapter.getAttendanceEvents.mockRejectedValue(new Error('Unknown read error') as never);
+    (mockAdapter.getAttendanceEvents as any).mockRejectedValue(new Error('Unknown read error') as never);
 
     vi.mocked(prisma.device.update).mockResolvedValue({ id: 'dev-123', is_active: true } as never);
 

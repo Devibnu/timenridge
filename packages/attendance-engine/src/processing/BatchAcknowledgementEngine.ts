@@ -78,7 +78,7 @@ export class BatchAcknowledgementEngine {
         correlation_id: result.correlationId,
         batch_id: batch.id,
         status: result.status,
-        payload: result.rawPayload ? (result.rawPayload as Prisma.InputJsonValue) : {},
+        payload: (result.rawPayload as any) || '{}',
       },
     });
 
@@ -114,7 +114,7 @@ export class BatchAcknowledgementEngine {
           timestamp: new Date().toISOString(),
           reason: result.status,
           external_reference: result.correlationId,
-        },
+        } as any,
       },
     });
 
@@ -144,7 +144,7 @@ export class BatchAcknowledgementEngine {
         stage: 'SAP_ACKNOWLEDGEMENT',
         status: 'FAILED',
         message: message,
-        error_details: result.rawPayload ? (result.rawPayload as Prisma.InputJsonValue) : {},
+        error_details: (result.rawPayload as any) || '{}',
       },
     });
   }

@@ -61,12 +61,10 @@ describe('Employee Mapping', () => {
       };
 
       vi.mocked(prisma.attendanceEvent.findUnique).mockResolvedValue(
-        // @ts-expect-error vitest-mock-extended typing mismatch
-        mockEvent,
+            mockEvent,
       );
       vi.mocked(prisma.employeeMapping.findMany).mockResolvedValue([
-        // @ts-expect-error vitest-mock-extended typing mismatch
-        mockMapping,
+            mockMapping,
       ]);
 
       const result = await resolver.resolve('evt-1');
@@ -100,8 +98,7 @@ describe('Employee Mapping', () => {
       };
 
       vi.mocked(prisma.attendanceEvent.findUnique).mockResolvedValue(
-        // @ts-expect-error vitest-mock-extended typing mismatch
-        mockEvent,
+            mockEvent,
       );
       vi.mocked(prisma.employeeMapping.findMany).mockResolvedValue([]); // None found
 
@@ -123,14 +120,11 @@ describe('Employee Mapping', () => {
 
       // Simulating a scenario where somehow two overlap (bypassed DB constraint, or old data)
       vi.mocked(prisma.attendanceEvent.findUnique).mockResolvedValue(
-        // @ts-expect-error vitest-mock-extended typing mismatch
-        mockEvent,
+            mockEvent,
       );
       vi.mocked(prisma.employeeMapping.findMany).mockResolvedValue([
-        // @ts-expect-error vitest-mock-extended typing mismatch
-        { id: 'm1' },
-        // @ts-expect-error vitest-mock-extended typing mismatch
-        { id: 'm2' },
+            { id: 'm1' },
+            { id: 'm2' },
       ]);
 
       const result = await resolver.resolve('evt-3');
@@ -159,12 +153,10 @@ describe('Employee Mapping', () => {
       };
 
       vi.mocked(prisma.attendanceEvent.findUnique).mockResolvedValue(
-        // @ts-expect-error vitest-mock-extended typing mismatch
-        mockEvent,
+            mockEvent,
       );
       vi.mocked(prisma.employeeMapping.findMany).mockResolvedValue([
-        // @ts-expect-error vitest-mock-extended typing mismatch
-        mockMapping,
+            mockMapping,
       ]);
 
       const result = await resolver.resolve('evt-4');
@@ -186,19 +178,16 @@ describe('Employee Mapping', () => {
 
   describe('EmployeeMappingManager', () => {
     it('P7-CONFLICT-001: overlapping mapping rejected on create', async () => {
-      // @ts-expect-error vitest-mock-extended typing mismatch
-      vi.mocked(prisma.device.findUnique).mockResolvedValue({
+        vi.mocked(prisma.device.findUnique).mockResolvedValue({
         id: 'dev-1',
       });
-      // @ts-expect-error vitest-mock-extended typing mismatch
-      vi.mocked(prisma.employee.findUnique).mockResolvedValue({
+        vi.mocked(prisma.employee.findUnique).mockResolvedValue({
         id: 'emp-1',
       });
 
       // P7's constraint covers the whole device temporal range regardless of identity/status.
       vi.mocked(prisma.employeeMapping.findMany).mockResolvedValue([
-        // @ts-expect-error vitest-mock-extended typing mismatch
-        {
+            {
           valid_from: new Date('2026-04-01T00:00:00Z'),
           valid_to: new Date('2026-06-01T00:00:00Z'),
         },
@@ -230,10 +219,8 @@ describe('Employee Mapping', () => {
     });
 
     it('allows a mapping that begins exactly when the prior half-open range ends', async () => {
-      // @ts-expect-error vitest-mock-extended typing mismatch
-      vi.mocked(prisma.device.findUnique).mockResolvedValue({ id: 'dev-1' });
-      // @ts-expect-error vitest-mock-extended typing mismatch
-      vi.mocked(prisma.employee.findUnique).mockResolvedValue({ id: 'emp-1' });
+        vi.mocked(prisma.device.findUnique).mockResolvedValue({ id: 'dev-1' });
+        vi.mocked(prisma.employee.findUnique).mockResolvedValue({ id: 'emp-1' });
       vi.mocked(prisma.employeeMapping.findMany).mockResolvedValue([]);
       vi.mocked(prisma.employeeMapping.create).mockResolvedValue({
         id: 'map-new',
@@ -261,13 +248,11 @@ describe('Employee Mapping', () => {
     });
 
     it('P7-AUDIT-001 / P7-LIFE-001: deactivate mapping preserves history and logs audit', async () => {
-      // @ts-expect-error vitest-mock-extended typing mismatch
-      vi.mocked(prisma.employeeMapping.findUnique).mockResolvedValue({
+        vi.mocked(prisma.employeeMapping.findUnique).mockResolvedValue({
         id: 'map-1',
         is_active: true,
       });
-      // @ts-expect-error vitest-mock-extended typing mismatch
-      vi.mocked(prisma.employeeMapping.update).mockResolvedValue({
+        vi.mocked(prisma.employeeMapping.update).mockResolvedValue({
         id: 'map-1',
         is_active: false,
       });

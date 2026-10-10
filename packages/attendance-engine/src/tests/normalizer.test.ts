@@ -43,14 +43,13 @@ describe('AttendanceNormalizer', () => {
     device_id: 'dev-1',
     device_employee_id: 'emp-1',
     event_timestamp: new Date('2026-09-23T00:30:00Z'),
-    raw_payload: {},
+    raw_payload: "{}",
     source_hash: 'hash1',
     received_at: new Date(),
     created_at: new Date(),
   };
 
   it('P6-NORM-001: should normalize a valid raw event', async () => {
-    // @ts-expect-error vitest-mock-extended typing mismatch
     vi.mocked(prisma.attendanceEvent.findUnique).mockImplementation(async () => null as never);
     vi.mocked(prisma.attendanceEvent.create).mockResolvedValue({ id: 'canon-1' } as never);
 
@@ -89,7 +88,6 @@ describe('AttendanceNormalizer', () => {
   });
 
   it('P6-NORM-004: should return DUPLICATE if event is already normalized', async () => {
-    // @ts-expect-error vitest-mock-extended typing mismatch
     vi.mocked(prisma.attendanceEvent.findUnique).mockResolvedValue({
       id: 'canon-existing',
     });
@@ -102,7 +100,6 @@ describe('AttendanceNormalizer', () => {
   });
 
   it('P6-NORM-005: should correctly convert timezone to Asia/Jakarta', async () => {
-    // @ts-expect-error vitest-mock-extended typing mismatch
     vi.mocked(prisma.attendanceEvent.findUnique).mockImplementation(async () => null as never);
     vi.mocked(prisma.attendanceEvent.create).mockResolvedValue({ id: 'canon-1' } as never);
 
@@ -122,16 +119,14 @@ describe('AttendanceNormalizer', () => {
   });
 
   it('P6-TYPE-001: explicit device event type is preserved', async () => {
-    // @ts-expect-error vitest-mock-extended typing mismatch
     vi.mocked(prisma.attendanceEvent.findUnique).mockImplementation(async () => null as never);
-    // @ts-expect-error vitest-mock-extended typing mismatch
     vi.mocked(prisma.attendanceEvent.create).mockResolvedValue({
       id: 'canon-type',
     });
 
     const typeEvent = { ...mockRawEvent, raw_payload: { event_type: 'IN' } };
 
-    await normalizer.normalizeSingle(typeEvent);
+    await normalizer.normalizeSingle(typeEvent as any);
 
     expect(prisma.attendanceEvent.create).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -143,15 +138,13 @@ describe('AttendanceNormalizer', () => {
   });
 
   it('P6-TYPE-002: UNKNOWN remains UNKNOWN', async () => {
-    // @ts-expect-error vitest-mock-extended typing mismatch
     vi.mocked(prisma.attendanceEvent.findUnique).mockImplementation(async () => null as never);
-    // @ts-expect-error vitest-mock-extended typing mismatch
     vi.mocked(prisma.attendanceEvent.create).mockResolvedValue({
       id: 'canon-unknown',
     });
 
     // Payload has no explicit event_type
-    const typeEvent = { ...mockRawEvent, raw_payload: {} };
+    const typeEvent = { ...mockRawEvent, raw_payload: "{}" };
 
     await normalizer.normalizeSingle(typeEvent);
 
@@ -165,12 +158,10 @@ describe('AttendanceNormalizer', () => {
   });
 
   it('P6-IDEM-DB-001: same raw event cannot create duplicate canonical DB record', async () => {
-    // @ts-expect-error vitest-mock-extended typing mismatch
     vi.mocked(prisma.attendanceEvent.findUnique).mockImplementation(async () => null as never);
     // Simulate DB-level Unique Constraint Violation (P2002) which occurs if race condition happens
     const p2002Error = new Error('Unique constraint failed on the fields: (`event_uid`)');
-    // @ts-expect-error vitest-mock-extended typing mismatch
-    p2002Error.code = 'P2002';
+    (p2002Error as any).code = 'P2002';
 
     vi.mocked(prisma.attendanceEvent.create).mockRejectedValue(p2002Error as never);
 
@@ -181,16 +172,14 @@ describe('AttendanceNormalizer', () => {
   });
 
   it('P6-TYPE-003: event ordering does not determine IN/OUT', async () => {
-    // @ts-expect-error vitest-mock-extended typing mismatch
     vi.mocked(prisma.attendanceEvent.findUnique).mockImplementation(async () => null as never);
-    // @ts-expect-error vitest-mock-extended typing mismatch
     vi.mocked(prisma.attendanceEvent.create).mockResolvedValue({
       id: 'canon-order',
     });
 
     // Even if we process multiple events sequentially for same employee, their type remains UNKNOWN
-    const event1 = { ...mockRawEvent, id: 'raw-1', raw_payload: {} };
-    const event2 = { ...mockRawEvent, id: 'raw-2', raw_payload: {} };
+    const event1 = { ...mockRawEvent, id: 'raw-1', raw_payload: "{}" };
+    const event2 = { ...mockRawEvent, id: 'raw-2', raw_payload: "{}" };
 
     await normalizer.normalizeSingle(event1);
     await normalizer.normalizeSingle(event2);
@@ -206,9 +195,7 @@ describe('AttendanceNormalizer', () => {
   });
 
   it('P6-TYPE-004: timestamp does not determine IN/OUT', async () => {
-    // @ts-expect-error vitest-mock-extended typing mismatch
     vi.mocked(prisma.attendanceEvent.findUnique).mockImplementation(async () => null as never);
-    // @ts-expect-error vitest-mock-extended typing mismatch
     vi.mocked(prisma.attendanceEvent.create).mockResolvedValue({
       id: 'canon-time',
     });
@@ -217,13 +204,13 @@ describe('AttendanceNormalizer', () => {
     const morningEvent = {
       ...mockRawEvent,
       event_timestamp: new Date('2026-09-23T00:50:00Z'),
-      raw_payload: {},
+      raw_payload: "{}",
     };
     // 17:00 PM
     const eveningEvent = {
       ...mockRawEvent,
       event_timestamp: new Date('2026-09-23T10:00:00Z'),
-      raw_payload: {},
+      raw_payload: "{}",
     };
 
     await normalizer.normalizeSingle(morningEvent);

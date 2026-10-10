@@ -1,10 +1,13 @@
 import { defineConfig } from 'vitest/config';
 
+import path from 'path';
+
 export default defineConfig({
   test: {
-    include: ['tests/**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    include: ['**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
+    exclude: ['**/node_modules/**', '**/dist/**'],
     env: {
       JWT_SECRET: 'test-secret',
-    },
+    }
   },
 });

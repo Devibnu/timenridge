@@ -1,6 +1,6 @@
 import { WorkerService } from '@timebridge/queue';
 
-import { AttendanceNormalizer } from '@timebridge/attendance-engine/dist/normalizer/AttendanceNormalizer';
+import { AttendanceNormalizer } from '@timebridge/attendance-engine';
 
 console.log('TimeBridge Worker started.');
 

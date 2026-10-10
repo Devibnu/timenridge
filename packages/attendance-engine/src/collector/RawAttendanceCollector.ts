@@ -107,7 +107,7 @@ export class RawAttendanceCollector {
           where: { device_id: deviceId, source_hash: { in: incomingHashes } },
           select: { source_hash: true },
         });
-        const existingHashes = new Set(existingEvents.map((e) => e.source_hash));
+        const existingHashes = new Set(existingEvents.map((e: any) => e.source_hash));
 
         const newRecords = records.filter((r) => !existingHashes.has(r.source_hash));
 
@@ -128,7 +128,7 @@ export class RawAttendanceCollector {
             status: 'PENDING',
           }));
 
-          await prisma.$transaction(async (tx) => {
+          await prisma.$transaction(async (tx: any) => {
             await tx.attendanceRawEvent.createMany({
               data: rawEvents,
             });
@@ -191,7 +191,7 @@ export class RawAttendanceCollector {
             },
           },
         })
-        .catch((dbErr) => {
+        .catch((dbErr: any) => {
           console.error(
             `Failed to update device state after error for ${deviceId}:`,
             dbErr.message,

@@ -146,11 +146,11 @@ export class AttendanceRuleEngine {
     // 4. Evaluate Tolerance
     const evaluation = this.toleranceEvaluator.evaluate(
       event.event_timestamp,
-      event.event_type,
+      event.event_type as any,
       resolved.shiftDate,
       resolved.shift,
       rule,
-      previousMapped,
+      previousMapped as any,
     );
 
     // 5. Persist Result
@@ -188,7 +188,7 @@ export class AttendanceRuleEngine {
       return await this.prisma.attendanceRuleResult.update({
         where: { id: existing.id },
         data: {
-          input_data: inputData as Prisma.InputJsonValue,
+          input_data: inputData as any as string,
           decision,
           reason,
         },
@@ -199,7 +199,7 @@ export class AttendanceRuleEngine {
       data: {
         attendance_event_id: event.id,
         rule_code: 'CORE_TOLERANCE_V1',
-        input_data: inputData as Prisma.InputJsonValue,
+        input_data: inputData as any as string,
         decision,
         reason,
       },

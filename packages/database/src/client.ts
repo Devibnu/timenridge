@@ -1,4 +1,5 @@
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient as PgClient } from '@prisma/client';
+import { PrismaClient as SqliteClient } from '@prisma/client-sqlite';
 import { jsonExtension } from './jsonExtension';
 
 declare global {
@@ -6,7 +7,10 @@ declare global {
   var prisma: any | undefined;
 }
 
-const basePrisma = new PrismaClient({
+const isSqlite = process.env.DATABASE_URL?.startsWith('file:');
+const PrismaClientCtor = isSqlite ? SqliteClient : PgClient;
+
+const basePrisma = new (PrismaClientCtor as any)({
   log: process.env.NODE_ENV === 'development' ? ['query', 'error', 'warn'] : ['error'],
 });
 

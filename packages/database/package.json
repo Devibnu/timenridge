@@ -3,7 +3,14 @@
   "version": "0.1.0",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
   "scripts": {
+    "generate": "prisma generate && prisma generate --schema=prisma/schema.sqlite.prisma",
     "build": "tsc",
     "clean": "rm -rf dist"
   },
