@@ -51,8 +51,8 @@ jobs:
 
       - name: Generate Prisma Client
         run: |
+          npm run --workspace=@timebridge/database generate
           npm run --workspace=@timebridge/database build
-          npx prisma generate --schema=packages/database/prisma/schema.prisma
 
       - name: Run Automated Tests
         run: npm run test
